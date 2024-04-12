@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router';
-import { Link } from 'react-router-dom'
 import {
     CAlert,
     CButton,
@@ -18,26 +17,18 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { userLogin } from '../../../api/user';
-import { useSelector, useDispatch } from 'react-redux'
-import { SET_NOTIFICATION } from '../../../action';
 import { allDispatch } from '../../../allDispatch';
 
 const Login = () => {
-    const { showNotification } = allDispatch();
+    const { showNotification, setUserLoginToken, setUserLoginData } = allDispatch();
     const navigate = useNavigate();
     const [validated, setValidated] = useState(false);
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
-    const dispatch = useDispatch()
-    let ok = {
-        // title: "Success",
-        message: 'You have successfully logged in',
-        status: 'success',
-        isOpen: true
-    }
-    // const [showAlert, setShowAlert] = useState(false);
+
     const handleSubmit = async (event) => {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
@@ -46,14 +37,25 @@ const Login = () => {
         } else {
             event.preventDefault()
             let response = await userLogin(formData);
-            showNotification({
-                title: "Success",
-                message: response?.data?.message,
-                status: 'success',
-                isOpen: true
-            });
-            setValidated(true);
-            navigate("/dashboard")
+            if (response.status === 200) {
+                showNotification({
+                    title: "Success",
+                    message: response?.data?.message,
+                    status: 'success',
+                    isOpen: true
+                });
+                setValidated(true);
+                setUserLoginToken(response?.data?.data?.token);
+                setUserLoginData(JSON.stringify(response?.data?.data));
+                navigate("/dashboard")
+            } else {
+                showNotification({
+                    title: "Error",
+                    message: response?.data?.message,
+                    status: 'danger',
+                    isOpen: true
+                });
+            }
         }
         form.classList.add('was-validated');
     }
