@@ -9,3 +9,13 @@ export async function userLogin(data) {
         throw error;
     }
 }
+
+// user forgot password
+export async function userForgotPasswordUsingOtpApi(data) {
+    try {
+        const response = await callPostApi({ url: "user/forgotPassword/otp", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

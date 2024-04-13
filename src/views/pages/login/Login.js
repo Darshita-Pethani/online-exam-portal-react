@@ -18,6 +18,7 @@ import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { userLogin } from '../../../api/user';
 import { allDispatch } from '../../../allDispatch';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     const { showNotification, setUserLoginToken, setUserLoginData } = allDispatch();
@@ -59,6 +60,7 @@ const Login = () => {
         }
         form.classList.add('was-validated');
     }
+    
     return (
         <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
             <CContainer>
@@ -112,7 +114,13 @@ const Login = () => {
                                                     Login
                                                 </CButton>
                                             </CCol>
+                                            <CCol xs={6}>
+                                                <Link to="/forgot-password" color="primary" className="mt-3" active tabIndex={-1}>
+                                                    forgot password
+                                                </Link>
+                                            </CCol>
                                         </CRow>
+
                                     </CForm>
                                 </CCardBody>
                             </CCard>

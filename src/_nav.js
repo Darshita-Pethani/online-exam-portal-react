@@ -267,6 +267,7 @@ const _nav = [
     component: CNavTitle,
     name: 'Extras',
   },
+  //pages routes
   {
     component: CNavGroup,
     name: 'Pages',
@@ -291,6 +292,16 @@ const _nav = [
         component: CNavItem,
         name: 'Error 500',
         to: '/500',
+      },
+      {
+        component: CNavItem,
+        name: 'Forgot Password',
+        to: '/forgot-password',
+      },
+      {
+        component: CNavItem,
+        name: 'OTP Verification',
+        to: '/otp-verification',
       },
     ],
   },
