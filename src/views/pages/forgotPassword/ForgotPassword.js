@@ -40,7 +40,7 @@ const ForgotPassword = () => {
                     isOpen: true
                 });
                 setValidated(true);
-                navigate("/otp-verification");
+                navigate("/otp-verification", { state: { formData } });
             } else {
                 showNotification({
                     title: "Error",
@@ -57,7 +57,7 @@ const ForgotPassword = () => {
         <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
             <CContainer>
                 <CRow className="justify-content-center">
-                    <CCol md={9} lg={7} xl={6}>
+                    <CCol md={9} lg={7} xl={5}>
                         <CCard className="mx-4">
                             <CCardBody className="p-4">
                                 <CForm
@@ -66,9 +66,9 @@ const ForgotPassword = () => {
                                     validated={validated}
                                     onSubmit={handleSubmit}
                                 >
-                                    <h1 style={{ fontSize: '23px', marginBottom: '20px' }}>Forgot Password</h1>
-                                    <p className="text-body-secondary" style={{ marginBottom: '30px' }}>Enter the email address associated with your account.</p>
-                                    <div style={{ marginBottom: '30px' }}>
+                                    <h1 style={{ fontSize: '23px', color: '#5856d6', textAlign: 'center' }}>Forgot Password</h1>
+                                    <p className="text-body-secondary" style={{ marginBottom: '30px', textAlign: 'center' }}>Enter the email address associated with your account.</p>
+                                    <div style={{ marginBottom: '20px' }}>
                                         <CInputGroup>
                                             <CInputGroupText>@</CInputGroupText>
                                             <CFormInput
@@ -95,7 +95,7 @@ const ForgotPassword = () => {
                     </CCol>
                 </CRow>
             </CContainer>
-        </div>
+        </div >
     )
 }
 

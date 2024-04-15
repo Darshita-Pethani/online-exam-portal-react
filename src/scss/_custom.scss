@@ -1,18 +1,25 @@
 // Here you can add other styles
 
 // otp verifiaction
-.otp-input-wrapper {
-    .input-group {
-        gap: 20px;
-        max-width: 320px;
-        margin: 0 auto;
+// .otp-input-wrapper {
+//     .input-group {
+//         gap: 20px;
+//         max-width: 320px;
+//         margin: 0 auto;
 
-        input {
-            height: 60px;
-            border-radius: 10px !important;
-            text-align: center;
+//         input {
+//             height: 60px;
+//             border-radius: 10px !important;
+//             text-align: center;
+//         }
+//     }
+// }
+
+
+@media only screen and (max-width: 425px) {
+    .otp_input_body {
+        .otp_input_card {
+            margin: 0 !important;
         }
     }
 }
-
-@media only screen and (max-width: 425px) {}

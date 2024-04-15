@@ -16,6 +16,7 @@ const ForgotPassword = React.lazy(() => import('./views/pages/forgotPassword/For
 const Page404 = React.lazy(() => import('./views/pages/page404/Page404'))
 const Page500 = React.lazy(() => import('./views/pages/page500/Page500'))
 const OtpVerification = React.lazy(() => import('./views/pages/otpVerification/otpVerification'))
+const ResetPassword = React.lazy(() => import('./views/pages/resetPassword/resetPassword'))
 
 const App = () => {
     const { isColorModeSet, setColorMode } = useColorModes('online-exam-portal')
@@ -49,6 +50,7 @@ const App = () => {
                     <Route exact path="/register" name="Register Page" element={<Register />} />
                     <Route exact path="/forgot-password" name="Forgot Password Page" element={<ForgotPassword />} />
                     <Route exact path="/otp-verification" name="OTP Verification Page" element={<OtpVerification />} />
+                    <Route exact path="/reset-password" name="Reset Password Page" element={<ResetPassword />} />
                     <Route exact path="/404" name="Page 404" element={<Page404 />} />
                     <Route exact path="/500" name="Page 500" element={<Page500 />} />
                     <Route path="*" name="Home" element={<DefaultLayout />} />

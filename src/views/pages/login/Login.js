@@ -19,6 +19,8 @@ import { cilLockLocked, cilUser } from '@coreui/icons'
 import { userLogin } from '../../../api/user';
 import { allDispatch } from '../../../allDispatch';
 import { Link } from 'react-router-dom';
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
     const { showNotification, setUserLoginToken, setUserLoginData } = allDispatch();
@@ -29,6 +31,11 @@ const Login = () => {
         email: '',
         password: '',
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
 
     const handleSubmit = async (event) => {
         const form = event.currentTarget
@@ -60,12 +67,12 @@ const Login = () => {
         }
         form.classList.add('was-validated');
     }
-    
+
     return (
         <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
             <CContainer>
                 <CRow className="justify-content-center">
-                    <CCol md={8}>
+                    <CCol md={9} lg={7}>
                         <CCardGroup>
                             <CCard className="p-4">
                                 <CCardBody>
@@ -92,13 +99,13 @@ const Login = () => {
                                                 required
                                             />
                                         </CInputGroup>
-                                        <CInputGroup className="mb-4">
+                                        <CInputGroup className="mb-4 relative">
                                             <CInputGroupText>
                                                 <CIcon icon={cilLockLocked} />
                                             </CInputGroupText>
                                             <CFormInput
                                                 id='Password'
-                                                type="password"
+                                                type={showPassword === true ? 'text' : 'password'}
                                                 name='password'
                                                 placeholder="Password"
                                                 autoComplete="current-password"
@@ -107,8 +114,19 @@ const Login = () => {
                                                 onChange={(event) => setFormData({ ...formData, password: event.target.value })}
                                                 required
                                             />
+                                            {
+                                                showPassword === true ?
+                                                    <FaEye
+                                                        style={{ position: 'absolute', right: '12px', bottom: '10px', cursor: 'pointer' }}
+                                                        onClick={handleClickShowPassword}
+                                                    /> :
+                                                    <FaEyeSlash
+                                                        style={{ position: 'absolute', right: '12px', bottom: '10px', cursor: 'pointer' }}
+                                                        onClick={handleClickShowPassword}
+                                                    />
+                                            }
                                         </CInputGroup>
-                                        <CRow>
+                                        <CRow style={{ alignItems: 'center !important' }}>
                                             <CCol xs={6}>
                                                 <CButton color="primary" className="px-4" type="submit">
                                                     Login
@@ -120,7 +138,6 @@ const Login = () => {
                                                 </Link>
                                             </CCol>
                                         </CRow>
-
                                     </CForm>
                                 </CCardBody>
                             </CCard>

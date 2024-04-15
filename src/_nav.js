@@ -303,6 +303,11 @@ const _nav = [
         name: 'OTP Verification',
         to: '/otp-verification',
       },
+      {
+        component: CNavItem,
+        name: 'Reset Password',
+        to: '/reset-password',
+      },
     ],
   },
   {

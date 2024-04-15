@@ -19,3 +19,23 @@ export async function userForgotPasswordUsingOtpApi(data) {
         throw error;
     }
 }
+
+// user otp verification
+export async function userOtpVerificationApi(data) {
+    try {
+        const response = await callPostApi({ url: "user/otp_verification", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// user reset password
+export async function userResetPasswordApi(data, id) {
+    try {
+        const response = await callPutApi({ url: `user//otp_verification/reset_password/${id}`, body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
