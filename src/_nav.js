@@ -267,7 +267,7 @@ const _nav = [
     component: CNavTitle,
     name: 'Extras',
   },
-  //pages routes
+  // autjentication pages routes
   {
     component: CNavGroup,
     name: 'Pages',
@@ -310,10 +310,11 @@ const _nav = [
       },
     ],
   },
+  // role
   {
     component: CNavItem,
-    name: 'Docs',
-    href: 'https://coreui.io/react/docs/templates/installation/',
+    name: 'Role',
+    to: 'pages/role/list',
     icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
   },
 ]

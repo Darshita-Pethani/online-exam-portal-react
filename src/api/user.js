@@ -33,7 +33,18 @@ export async function userOtpVerificationApi(data) {
 // user reset password
 export async function userResetPasswordApi(data, id) {
     try {
-        const response = await callPutApi({ url: `user//otp_verification/reset_password/${id}`, body: data });
+        const response = await callPutApi({ url: `user/otp_verification/reset_password/${id}`, body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+// user log out
+export async function userLogoutApi(data, id) {
+    try {
+        const response = await callPostApi({ url: `user/sign_out`, body: data });
         return response;
     } catch (error) {
         throw error;

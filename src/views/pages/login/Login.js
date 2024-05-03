@@ -71,7 +71,7 @@ const Login = () => {
     return (
         <div className="bg-body-tertiary min-vh-100 d-flex flex-row align-items-center">
             <CContainer>
-                <CRow className="justify-content-center">
+                <CRow className="justify-content-center login_page">
                     <CCol md={9} lg={7}>
                         <CCardGroup>
                             <CCard className="p-4">
@@ -99,7 +99,7 @@ const Login = () => {
                                                 required
                                             />
                                         </CInputGroup>
-                                        <CInputGroup className="mb-4 relative">
+                                        <CInputGroup className="relative" style={{ marginBottom: '20px' }}>
                                             <CInputGroupText>
                                                 <CIcon icon={cilLockLocked} />
                                             </CInputGroupText>
@@ -126,13 +126,13 @@ const Login = () => {
                                                     />
                                             }
                                         </CInputGroup>
-                                        <CRow style={{ alignItems: 'center !important' }}>
-                                            <CCol xs={6}>
+                                        <CRow style={{ alignItems: 'center !important' }} className='login_btn_sec'>
+                                            <CCol style={{ marginTop: '20px !important' }}>
                                                 <CButton color="primary" className="px-4" type="submit">
                                                     Login
                                                 </CButton>
                                             </CCol>
-                                            <CCol xs={6}>
+                                            <CCol style={{ textAlign: 'end', padding: 0 }}>
                                                 <Link to="/forgot-password" color="primary" className="mt-3" active tabIndex={-1}>
                                                     forgot password
                                                 </Link>
@@ -141,7 +141,7 @@ const Login = () => {
                                     </CForm>
                                 </CCardBody>
                             </CCard>
-                            <CCard className="text-white bg-primary py-5" style={{ width: '44%' }}>
+                            <CCard className="text-white bg-primary py-5">
                                 <CCardBody className="text-center d-flex align-items-center ">
                                     <div>
                                         <h2>Welcome back!!</h2>
