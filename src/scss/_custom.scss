@@ -26,3 +26,46 @@
         }
     }
 }
+
+
+// set edit and delete buttons
+.editDeleteButton {
+    width: 30px;
+    background: rgba(88, 86, 214, 0.08);
+    height: 30px;
+    border-radius: 50%;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+// override tbl css
+.mantine-1m3tpc2 {
+    margin: 0 20px;
+}
+
+.mantine-1qybf08 {
+    background-color: #5856d614;
+}
+
+.mantine-augnbd>thead>tr>th,
+.mantine-augnbd>tfoot>tr>th,
+.mantine-augnbd>tbody>tr>th {
+    color: black;
+}
+
+.mantine-1uskmy4 {
+    letter-spacing: 1px;
+}
+
+.mantine-1knjhw7 {
+    padding-bottom: 20px;
+}
+
+.mantine-1g7noys {
+    justify-content: center;
+}
+
+.mantine-yzu17x {
+    text-align: center;
+}

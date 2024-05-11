@@ -11,12 +11,13 @@ import { allDispatch } from '../../../allDispatch'
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { DeleteRecord } from '../../../components/deleteRecord'
+import { usersDataApi } from '../../../api/user'
 
-const RoleList = () => {
+const UsersList = () => {
     const navigate = useNavigate();
     const { showNotification } = allDispatch();
 
-    const [roleList, setRoleList] = useState([]);
+    const [usersList, setUsersList] = useState([]);
     const [rowCount, setRowCount] = useState(0);
     const [statusUpdate, setStatusUpdate] = useState(false);
 
@@ -27,10 +28,10 @@ const RoleList = () => {
         "filters": []
     });
 
-    const roleData = async () => {
-        const response = await roleDataApi(defaultFilter);
+    const usersData = async () => {
+        const response = await usersDataApi(defaultFilter);
         if (response?.status === 200) {
-            setRoleList(response?.data?.data?.rows);
+            setUsersList(response?.data?.data);
             setRowCount(response?.data?.data?.count);
         } else if (response?.status === 401) {
             navigate("/");
@@ -39,10 +40,28 @@ const RoleList = () => {
 
     const columns = useMemo(() => [
         {
-            accessorKey: 'name',
-            header: 'ROLE NAME',
+            accessorKey: 'full_name',
+            header: 'FULL NAME',
             size: 150,
-            Cell: ({ row }) => <>{row?.original?.name || "-"}</>
+            Cell: ({ row }) => <>{row?.original?.full_name || "-"}</>
+        },
+        {
+            accessorKey: 'username',
+            header: 'USER NAME',
+            size: 150,
+            Cell: ({ row }) => <>{row?.original?.username || "-"}</>
+        },
+        {
+            accessorKey: 'email',
+            header: 'EMAIL',
+            size: 150,
+            Cell: ({ row }) => <>{row?.original?.email || "-"}</>
+        },
+        {
+            accessorKey: 'image',
+            header: 'IMAGE',
+            size: 150,
+            Cell: ({ row }) => <>{row?.original?.image || "-"}</>
         },
         {
             accessorKey: 'status',
@@ -75,7 +94,7 @@ const RoleList = () => {
                         <div style={{ background: "rgb(88 86 214 / 8%)" }} className='editDeleteButton edit'
                         >
                             <CiEdit style={{ color: 'rgb(4 0 255)' }}
-                                onClick={() => getRoleDataById(row?.original?.id)}
+                                onClick={() => getUserDataById(row?.original?.id)}
                             />
                         </div>
 
@@ -90,8 +109,8 @@ const RoleList = () => {
     ], []);
 
     // Get role data by id
-    const getRoleDataById = async (id) => {
-        navigate('/pages/role/edit', {
+    const getUserDataById = async (id) => {
+        navigate('/pages/users/edit', {
             state: {
                 id: id,
                 editData: true
@@ -100,8 +119,8 @@ const RoleList = () => {
     }
 
     useEffect(() => {
-        roleData();
-    }, [defaultFilter, roleList]);
+        usersData();
+    }, [defaultFilter, usersList]);
 
     return (
         <CCardBody>
@@ -113,15 +132,15 @@ const RoleList = () => {
                     }}
                     hoverBgColor='#4846db'
                     hoverFontColor='white'
-                    label='Add Role'
-                    onClick={() => navigate('/pages/role/add')}
+                    label='Add User'
+                    onClick={() => navigate('/pages/users/add')}
                 />
             </div>
 
             <TableContainer
-                title='Role List'
+                title='User List'
                 columns={columns}
-                data={roleList}
+                data={usersList}
                 defaultFilter={defaultFilter}
                 setDefaultFilter={setDefaultFilter}
                 rowCount={rowCount}
@@ -130,4 +149,4 @@ const RoleList = () => {
     )
 }
 
-export default RoleList
+export default UsersList

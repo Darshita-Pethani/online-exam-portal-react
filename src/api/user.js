@@ -50,3 +50,34 @@ export async function userLogoutApi(data, id) {
         throw error;
     }
 }
+
+
+// user status update
+export async function statusUpdateApi(data) {
+    try {
+        const response = await callPostApi({ url: `utils/update/status`, body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Get users data api...
+export async function usersDataApi(data) {
+    try {
+        const response = await callPostApi({ url: "user/list", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Get users data by id api
+export async function getUsersDataByIdApi(id) {
+    try {
+        const response = await callGetApi({ url: `user/${id}` });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

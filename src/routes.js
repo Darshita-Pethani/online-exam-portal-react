@@ -51,7 +51,12 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 
 // roles
-const RoleList = React.lazy(() => import('./views/pages/role/index'))
+const RoleList = React.lazy(() => import('./views/pages/role/index'));
+const AddRole = React.lazy(() => import('./views/pages/role/addRole/index'));
+
+// users
+const UsersList = React.lazy(() => import('./views/pages/users/index'));
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -100,7 +105,15 @@ const routes = [
   { path: '/widgets', name: 'Widgets', element: Widgets },
 
   // pages route
+  
+  // role routes
   { path: '/pages/role/list', name: 'role', element: RoleList },
+  { path: '/pages/role/add', name: 'add role', element: AddRole },
+  { path: '/pages/role/edit', name: 'Edit role', element: AddRole },
+
+  // users routes
+  { path: '/pages/users/list', name: 'user', element: UsersList },
+
 ]
 
 export default routes

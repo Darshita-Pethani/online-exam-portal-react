@@ -1,3 +1,14 @@
+:root {
+  --cui-primary: #5856d6; /* Primary color (purple) */
+  --cui-secondary: #6c757d; /* Secondary color */
+  --cui-success: #3aa33e; /* Success color */
+  --cui-danger: #f53b2b; /* Danger color */
+  --cui-warning: #ffc107; /* Warning color */
+  --cui-info: #17a2b8; /* Info color */
+  --cui-light: #f8f9fa; /* Light color */
+  --cui-dark: #343a40; /* Dark color */
+}
+
 body {
   background-color: var(--cui-tertiary-bg);
 }
