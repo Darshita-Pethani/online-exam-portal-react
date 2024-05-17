@@ -6,11 +6,11 @@ import TableContainer from '../../../components/TableContainer'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { statusData } from '../utils/helper'
 import UpdateStatus from '../../../components/updateStatus'
-import FormButton from '../../../components/Form/formButton'
 import { allDispatch } from '../../../allDispatch'
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { DeleteRecord } from '../../../components/deleteRecord'
+import FormButton from '../../forms/formButton'
 
 const RoleList = () => {
     const navigate = useNavigate();
@@ -69,6 +69,7 @@ const RoleList = () => {
             size: 150,
             enableColumnFilter: false,
             enableSorting: false,
+            enableHiding: false, // hide thase j ny aa column ane hide thy pn ske aa proprty thi
             Cell: ({ row }) => (
                 <>
                     <div style={{ display: "flex", alignItems: "center", gap: '10px', justifyContent: 'center' }}>
@@ -108,7 +109,7 @@ const RoleList = () => {
             <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <FormButton
                     style={{
-                        color: 'white', fontSize: '16px', fontWeight: '500', marginBottom: '16px',
+                        color: 'white', fontSize: '16px', fontWeight: '500', marginBottom: '24px',
                         backgroundColor: 'var(--cui-primary)'
                     }}
                     hoverBgColor='#4846db'

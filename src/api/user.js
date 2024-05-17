@@ -81,3 +81,24 @@ export async function getUsersDataByIdApi(id) {
         throw error;
     }
 }
+
+// Add user from anther user
+export async function addUser(data) {
+    try {
+        const response = await callPostApi({ url: "user/add", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
+// Update user from anther user
+export async function updateUser(data) {
+    try {
+        const response = await callPutApi({ url: "user/update", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

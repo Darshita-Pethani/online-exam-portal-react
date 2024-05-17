@@ -56,6 +56,8 @@ const AddRole = React.lazy(() => import('./views/pages/role/addRole/index'));
 
 // users
 const UsersList = React.lazy(() => import('./views/pages/users/index'));
+const AddUser = React.lazy(() => import('./views/pages/users/addUser/index'));
+
 
 
 const routes = [
@@ -113,6 +115,8 @@ const routes = [
 
   // users routes
   { path: '/pages/users/list', name: 'user', element: UsersList },
+  { path: '/pages/users/add', name: 'add role', element: AddUser },
+  { path: '/pages/users/edit', name: 'Edit role', element: AddUser },
 
 ]
 

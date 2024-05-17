@@ -25,6 +25,17 @@ const TableContainer = ({ columns, data, title, defaultFilter, setDefaultFilter,
         setPaginationValue();
     }, [sorting, columnFilters, pagination]);
 
+
+    // for default hidden column
+    const findColum = () => {
+        let column = {};
+        columns?.map((columnName) => {
+            if (columnName?.defaultHiddenColumn === true) {
+                column[columnName?.accessorKey] = false
+            }
+        });
+        return column;
+    }
     const table = useMantineReactTable({
         columns,
         data,
@@ -55,6 +66,7 @@ const TableContainer = ({ columns, data, title, defaultFilter, setDefaultFilter,
                 >{title}</h4>
             </div >
         ),
+        initialState: { columnVisibility: findColum() }, // for hide column in listing page
     });
 
     return <MantineReactTable table={table} />

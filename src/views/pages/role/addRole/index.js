@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { CButton, CCard, CCardBody, CCol, CForm, CFormInput, CFormSelect, CInputGroup, CInputGroupText, CRow } from '@coreui/react'
-import FormButton from '../../../../components/Form/formButton'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { addRole, getRoleDataByIdApi, updateRoleDataApi } from '../../../../api/role'
 import { allDispatch } from '../../../../allDispatch'
 import InputBox from '../../../forms/inputBox'
 import { statusData } from '../../utils/helper'
 import SelectBox from '../../../forms/selectOption'
+import FormButton from '../../../forms/formButton'
 
 const AddRole = () => {
     const { showNotification } = allDispatch();
@@ -69,6 +69,7 @@ const AddRole = () => {
         form.classList.add('was-validated');
         setValidated(true);
     }
+
     const getRoleDataById = async (id) => {
         const response = await getRoleDataByIdApi(id);
         if (response?.status === 200) {
@@ -83,7 +84,6 @@ const AddRole = () => {
             getRoleDataById(location?.state?.id);
         }
     }, []);
-
 
     return (
         <CRow className="justify-content-center">
