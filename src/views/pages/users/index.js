@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { CCardBody } from '@coreui/react'
+import { CButton, CCardBody, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
 import { deleteRole, roleDataApi } from '../../../api/role'
 import { useNavigate } from 'react-router-dom'
 import TableContainer from '../../../components/TableContainer'
@@ -13,6 +13,7 @@ import { DeleteRecord } from '../../../components/deleteRecord'
 import { deleteUser, usersDataApi } from '../../../api/user'
 import FormButton from '../../forms/formButton'
 import moment from 'moment'
+import { ImageModel } from '../../../components/ImageModel'
 
 const UsersList = () => {
     const navigate = useNavigate();
@@ -21,6 +22,7 @@ const UsersList = () => {
     const [usersList, setUsersList] = useState([]);
     const [rowCount, setRowCount] = useState(0);
     const [statusUpdate, setStatusUpdate] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const [defaultFilter, setDefaultFilter] = useState({
         "currentPage": 1,
@@ -38,7 +40,7 @@ const UsersList = () => {
             navigate("/");
         }
     }
-
+    const [visible, setVisible] = useState(false);
     const columns = useMemo(() => [
         {
             accessorKey: 'full_name',
@@ -100,14 +102,24 @@ const UsersList = () => {
             size: 50,
             enableColumnFilter: false,
             enableSorting: false,
-            defaultHiddenColumn: true,
+            // defaultHiddenColumn: true,
             Cell: ({ row }) => <>
                 {
                     <>
                         {row?.original?.image ?
-                            <div>
-                                <img src={row?.original?.image} alt='user img' style={{ objectFit: 'cover', width: '100px', height: '100px' }} />
-                            </div>
+                            <>
+                                <div onClick={() => {
+                                    setSelectedImage(row?.original?.image);
+                                    setVisible(true);
+                                }}
+                                >
+                                    <img
+                                        src={row?.original?.image}
+                                        alt='user img'
+                                        style={{ objectFit: 'cover', width: '100px', height: '100px', cursor: 'pointer' }}
+                                    />
+                                </div>
+                            </>
                             : '-'
                         }
                     </>
@@ -171,7 +183,7 @@ const UsersList = () => {
 
     useEffect(() => {
         usersData();
-    }, [defaultFilter, usersList]);
+    }, [defaultFilter]);
 
     return (
         <CCardBody>
@@ -196,6 +208,16 @@ const UsersList = () => {
                 setDefaultFilter={setDefaultFilter}
                 rowCount={rowCount}
             />
+
+            {
+                visible &&
+                <ImageModel
+                    visible={visible}
+                    setVisible={setVisible}
+                    src={selectedImage}
+                    alt='user img'
+                />
+            }
         </CCardBody>
     )
 }
