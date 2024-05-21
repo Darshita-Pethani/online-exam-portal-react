@@ -2,13 +2,18 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { CCard, CCardBody, CCol, CForm, CFormCheck, CFormInput, CImage, CRow } from '@coreui/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { allDispatch } from '../../../../allDispatch'
-import InputBox from '../../../forms/inputBox'
+import { InputBox, InputTextArea } from '../../../forms/inputBox'
 import { statusData } from '../../utils/helper'
 import SelectBox from '../../../forms/selectOption'
 import { addUser, getUsersDataByIdApi, updateUser } from '../../../../api/user'
 import { roleDataApi } from '../../../../api/role'
 import FormButton from '../../../forms/formButton'
 import RadioButton from '../../../forms/radioButton'
+import DatePicker from 'react-date-picker';
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import moment from 'moment'
+import { FormDatePicker } from '../../../forms/datePicker'
 
 const AddUser = () => {
     const { showNotification } = allDispatch();
@@ -25,20 +30,31 @@ const AddUser = () => {
         confirm_password: '',
         image: '',
         phone_no: '',
+        address: '',
         role_id: '',
         gender: '',
+        date_of_birth: '',
         status: '',
         imageName: ''
     });
 
-    // console.log('addData: ', addData);
+    const [formDateError, setFormDateError] = useState('');
 
+    const validateDateOfBirth = () => {
+        if (!addData.date_of_birth) {
+            setFormDateError('Date of Birth is required');
+            return false;
+        }
+        setFormDateError('');
+        return true;
+    };
 
     const handleSubmit = async (event) => {
         let formData = new FormData();
         const form = event.currentTarget;
 
         if (form.checkValidity() === false) {
+            validateDateOfBirth();
             event.preventDefault()
             event.stopPropagation()
         } else {
@@ -51,8 +67,10 @@ const AddUser = () => {
                 formData.append("email", addData?.email);
                 formData.append("file", addData?.image);
                 formData.append("phone_no", addData?.phone_no);
+                formData.append("address", addData?.address);
                 formData.append("role_id", addData?.role_id);
                 formData.append("gender", addData?.gender);
+                formData.append("date_of_birth", addData?.date_of_birth);
                 formData.append("status", addData?.status);
                 let response = await updateUser(formData);
                 if (response.status === 200) {
@@ -81,8 +99,10 @@ const AddUser = () => {
                 formData.append("password", addData?.password);
                 formData.append("confirm_password", addData?.confirm_password);
                 formData.append("phone_no", addData?.phone_no);
+                formData.append("address", addData?.address);
                 formData.append("role_id", addData?.role_id);
                 formData.append("gender", addData?.gender);
+                formData.append("date_of_birth", addData?.date_of_birth);
                 formData.append("status", addData?.status);
                 let response = await addUser(formData);
                 if (response.status === 200) {
@@ -197,87 +217,74 @@ const AddUser = () => {
                             onSubmit={handleSubmit}
                         >
                             <div className='row'>
-                                <div className='col-12 col-md-6'>
-                                    {/* first name */}
-                                    <div className="mb-3 fw-600">
-                                        <InputBox
-                                            feedbackInvalid="First Name is required"
-                                            id="validationFirstName"
-                                            label="First Name"
-                                            placeholder="First Name"
-                                            type="Text"
-                                            name='first_name'
-                                            value={addData?.first_name}
-                                            onChange={(event) => setAddData({ ...addData, first_name: event.target.value })}
-                                            // onChange={handleChange}
-                                            required={true}
-                                        />
-                                    </div>
+                                {/* first name */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputBox
+                                        feedbackInvalid="First Name is required"
+                                        id="validationFirstName"
+                                        label="First Name"
+                                        placeholder="First Name"
+                                        type="Text"
+                                        name='first_name'
+                                        value={addData?.first_name}
+                                        onChange={(event) => setAddData({ ...addData, first_name: event.target.value })}
+                                        // onChange={handleChange}
+                                        required={true}
+                                    />
                                 </div>
 
-                                <div className='col-12 col-md-6'>
-                                    {/* last name */}
-                                    <div className="mb-3 fw-600">
-                                        <InputBox
-                                            feedbackInvalid="Last Name is required"
-                                            id="validationLastName"
-                                            label="Last Name"
-                                            placeholder="Last Name"
-                                            type="Text"
-                                            name='last_name'
-                                            value={addData?.last_name}
-                                            onChange={(event) => setAddData({ ...addData, last_name: event.target.value })}
-                                            // onChange={handleChange}
-                                            required={true}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='row'>
-                                <div className='col-12 col-md-6'>
-                                    {/* user name */}
-                                    <div className="mb-3 fw-600">
-                                        <InputBox
-                                            feedbackInvalid="User Name is required"
-                                            id="validationUserName"
-                                            label="User Name"
-                                            placeholder="User Name"
-                                            type="Text"
-                                            name='username'
-                                            value={addData?.username}
-                                            onChange={(event) => setAddData({ ...addData, username: event.target.value })}
-                                            // onChange={handleChange}
-                                            required={true}
-                                        />
-                                    </div>
-
+                                {/* last name */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputBox
+                                        feedbackInvalid="Last Name is required"
+                                        id="validationLastName"
+                                        label="Last Name"
+                                        placeholder="Last Name"
+                                        type="Text"
+                                        name='last_name'
+                                        value={addData?.last_name}
+                                        onChange={(event) => setAddData({ ...addData, last_name: event.target.value })}
+                                        // onChange={handleChange}
+                                        required={true}
+                                    />
                                 </div>
 
-                                <div className='col-12 col-md-6'>
-                                    {/* email */}
-                                    <div className="mb-3 fw-600">
-                                        <InputBox
-                                            feedbackInvalid="Email is required"
-                                            id="validationEmail"
-                                            label="Email"
-                                            placeholder="Email"
-                                            type="email"
-                                            name='email'
-                                            value={addData?.email}
-                                            onChange={(event) => setAddData({ ...addData, email: event.target.value })}
-                                            // onChange={handleChange}
-                                            required={true}
-                                        />
-                                    </div>
+                                {/* user name */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputBox
+                                        feedbackInvalid="User Name is required"
+                                        id="validationUserName"
+                                        label="User Name"
+                                        placeholder="User Name"
+                                        type="Text"
+                                        name='username'
+                                        value={addData?.username}
+                                        onChange={(event) => setAddData({ ...addData, username: event.target.value })}
+                                        // onChange={handleChange}
+                                        required={true}
+                                    />
                                 </div>
-                            </div>
 
-                            {/* password feild */}
-                            <div className='row' style={{ display: location?.state?.editData ? 'none' : 'flex' }}>
-                                <div className='col-12 col-md-6'>
+                                {/* email */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputBox
+                                        feedbackInvalid="Email is required"
+                                        id="validationEmail"
+                                        label="Email"
+                                        placeholder="Email"
+                                        type="email"
+                                        name='email'
+                                        value={addData?.email}
+                                        onChange={(event) => setAddData({ ...addData, email: event.target.value })}
+                                        // onChange={handleChange}
+                                        required={true}
+                                    />
+                                </div>
+
+                                {/* password feild */}
+                                <div className='row' style={{ display: location?.state?.editData ? 'none' : 'flex' }}>
                                     {/* password */}
-                                    <div className="mb-3 fw-600">
+                                    <div className='col-12 col-md-6 mb-3 fw-600'>
                                         <InputBox
                                             feedbackInvalid="Password is required"
                                             id="validationPassword"
@@ -291,11 +298,9 @@ const AddUser = () => {
                                             required={location?.state?.editData ? false : true}
                                         />
                                     </div>
-                                </div>
 
-                                <div className='col-12 col-md-6'>
                                     {/* confirm password */}
-                                    <div className="mb-3 fw-600">
+                                    <div className='col-12 col-md-6 mb-3 fw-600'>
                                         <InputBox
                                             feedbackInvalid="Confirm Password is required"
                                             id="validationConfirm"
@@ -310,115 +315,110 @@ const AddUser = () => {
                                         />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className='row'>
-                                <div className='col-12 col-md-6'>
-                                    {/* Phone no */}
-                                    <div className="mb-3 fw-600">
-                                        <InputBox
-                                            feedbackInvalid="Phone no is required"
-                                            id="validationPhonNo"
-                                            label="Phone no."
-                                            placeholder="Phone no"
-                                            type="text"
-                                            name='phoneNo'
-                                            value={addData?.phone_no}
-                                            onChange={(event) => setAddData({ ...addData, phone_no: event.target.value })}
-                                            // onChange={handleChange}
-                                            required={true}
-                                        />
-                                    </div>
+                                {/* Phone no */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputBox
+                                        feedbackInvalid="Phone no is required"
+                                        id="validationPhonNo"
+                                        label="Phone no."
+                                        placeholder="Phone no"
+                                        type="text"
+                                        name='phoneNo'
+                                        value={addData?.phone_no}
+                                        onChange={(event) => setAddData({ ...addData, phone_no: event.target.value })}
+                                        // onChange={handleChange}
+                                        required={true}
+                                    />
                                 </div>
 
-                                <div className='col-12 col-md-6'>
-                                    {/* image */}
-                                    <div className="mb-3 fw-600">
-                                        <CFormInput
-                                            feedbackInvalid="Image is required"
-                                            id="formFile"
-                                            label="Upload Image"
-                                            placeholder="Image"
-                                            type="file"
-                                            name='image'
-                                            onChange={handleImageUpload}
-                                            required={true}
-                                        />
-                                        {
-                                            images &&
-                                            <CImage rounded thumbnail src={images} width={50} height={50} />
-
-                                        }
-                                    </div>
+                                {/* address */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputTextArea
+                                        feedbackInvalid="Address is required"
+                                        id="validationAddress"
+                                        label="Address"
+                                        placeholder="Address"
+                                        name='address'
+                                        value={addData?.address}
+                                        onChange={(event) => setAddData({ ...addData, address: event.target.value })}
+                                        rows={3}
+                                        required={true}
+                                    />
                                 </div>
-                            </div>
 
-                            <div className='row'>
+                                {/* date time picker */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <FormDatePicker
+                                        value={addData?.date_of_birth}
+                                        label="Date of Birth"
+                                        name='Date of Birth'
+                                        setAddData={setAddData}
+                                        setFormDateError={setFormDateError}
+                                        formDateError={formDateError}
+                                        formKeyName='date_of_birth'
+                                    />
+                                </div>
+
+                                {/* image */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <CFormInput
+                                        feedbackInvalid="Image is required"
+                                        id="formFile"
+                                        label="Upload Image"
+                                        placeholder="Image"
+                                        type="file"
+                                        name='image'
+                                        onChange={handleImageUpload}
+                                        required={true}
+                                    />
+                                    {
+                                        images &&
+                                        <CImage rounded thumbnail src={images} width={50} height={50} />
+
+                                    }
+                                </div>
+
                                 {/* gender */}
-                                <div className='col-12 col-md-6'>
-                                    <div className='mb-3 fw-600'>
-                                        <RadioButton
-                                            label='Gender'
-                                            type="radio"
-                                            id="flexGenderRadioBtn"
-                                            name="gender"
-                                            radioButtonData={radioButtonData}
-                                            value={addData?.gender}
-                                            onChange={(event) => setAddData({ ...addData, gender: event.target.value })}
-                                            style={{ gap: '20px' }}
-                                        />
-                                    </div>
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <RadioButton
+                                        label='Gender'
+                                        type="radio"
+                                        id="flexGenderRadioBtn"
+                                        name="gender"
+                                        radioButtonData={radioButtonData}
+                                        value={addData?.gender}
+                                        onChange={(event) => setAddData({ ...addData, gender: event.target.value })}
+                                        style={{ gap: '20px' }}
+                                    />
                                 </div>
 
-                                <div className='col-12 col-md-6'>
-                                    <div className='mb-3 fw-600'>
-                                        address
-                                        {/* <RadioButton
-                                            label='Gender'
-                                            type="radio"
-                                            id="flexGenderRadioBtn"
-                                            name="gender"
-                                            radioButtonData={radioButtonData}
-                                            value={addData?.gender}
-                                            onChange={(event) => setAddData({ ...addData, gender: event.target.value })}
-                                            style={{ gap: '20px' }}
-                                        /> */}
-                                    </div>
+                                {/* add role */}
+                                <div className='col-12 col-md-6 mb-3'>
+                                    <SelectBox
+                                        ariaLabel="Select Role"
+                                        label="Role"
+                                        value={addData?.role_id}
+                                        onChange={(event) => setAddData({ ...addData, role_id: event.target.value })}
+                                        feedbackInvalid="Role is required"
+                                        id="validationRole"
+                                        options={roleData}
+                                        required={true}
+                                    />
                                 </div>
 
-                            </div>
-
-                            <div className='row'>
-                                <div className='col-12 col-md-6'>
-                                    {/* add role */}
-                                    <div className="mb-3">
-                                        <SelectBox
-                                            aria-label="select Role"
-                                            label="Role"
-                                            value={addData?.role_id}
-                                            onChange={(event) => setAddData({ ...addData, role_id: event.target.value })}
-                                            feedbackInvalid="Role is required"
-                                            id="validationRole"
-                                            options={roleData}
-                                            required={true}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className='col-12 col-md-6'>
-                                    {/* status */}
-                                    <div className="mb-3">
-                                        <SelectBox
-                                            aria-label="select Status"
-                                            label="Status"
-                                            value={addData?.status}
-                                            onChange={(event) => setAddData({ ...addData, status: event.target.value })}
-                                            feedbackInvalid="Status is required"
-                                            id="validationStatus"
-                                            options={statusData}
-                                            required
-                                        />
-                                    </div>
+                                {/* status */}
+                                <div className='col-12 col-md-6 mb-3'>
+                                    <SelectBox
+                                        ariaLabel="Select Status"
+                                        label="Status"
+                                        value={addData?.status}
+                                        onChange={(event) => setAddData({ ...addData, status: event.target.value })}
+                                        feedbackInvalid="Status is required"
+                                        id="validationStatus"
+                                        options={statusData}
+                                        required
+                                    />
                                 </div>
                             </div>
 

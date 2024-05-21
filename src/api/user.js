@@ -82,7 +82,7 @@ export async function getUsersDataByIdApi(id) {
     }
 }
 
-// Add user from anther user
+// Add user from another user
 export async function addUser(data) {
     try {
         const response = await callPostApi({ url: "user/add", body: data });
@@ -93,10 +93,20 @@ export async function addUser(data) {
 }
 
 
-// Update user from anther user
+// Update user from another user
 export async function updateUser(data) {
     try {
         const response = await callPutApi({ url: "user/update", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Delete user from another user by id
+export async function deleteUser(id) {
+    try {
+        const response = await callDeleteApi({ url: `user/delete/${id}` });
         return response;
     } catch (error) {
         throw error;

@@ -10,8 +10,9 @@ import { allDispatch } from '../../../allDispatch'
 import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { DeleteRecord } from '../../../components/deleteRecord'
-import { usersDataApi } from '../../../api/user'
+import { deleteUser, usersDataApi } from '../../../api/user'
 import FormButton from '../../forms/formButton'
+import moment from 'moment'
 
 const UsersList = () => {
     const navigate = useNavigate();
@@ -66,6 +67,20 @@ const UsersList = () => {
             Cell: ({ row }) => <>{row?.original?.role?.name || "-"}</>
         },
         {
+            accessorKey: 'address',
+            header: 'ADDRESS',
+            size: 150,
+            defaultHiddenColumn: true,
+            Cell: ({ row }) => <>{row?.original?.address || "-"}</>
+        },
+        {
+            accessorKey: 'date_of_birth',
+            header: 'DATE OF BIRTH',
+            size: 150,
+            filterVariant: 'date',
+            Cell: ({ row }) => <>{row?.original?.date_of_birth ? moment(row?.original?.date_of_birth).format('DD-MM-YYYY') : "-"}</>
+        },
+        {
             accessorKey: 'phone_no',
             header: 'PHONE NO',
             size: 150,
@@ -86,7 +101,17 @@ const UsersList = () => {
             enableColumnFilter: false,
             enableSorting: false,
             defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.image || "-"}</>
+            Cell: ({ row }) => <>
+                {
+                    <>
+                        {row?.original?.image ?
+                            <div>
+                                <img src={row?.original?.image} alt='user img' style={{ objectFit: 'cover', width: '100px', height: '100px' }} />
+                            </div>
+                            : '-'
+                        }
+                    </>
+                }</>
         },
         {
             accessorKey: 'status',
@@ -126,7 +151,7 @@ const UsersList = () => {
 
                         <div style={{ background: "rgb(238 51 94 / 10%)" }} className='editDeleteButton delete'>
                             <MdDelete style={{ color: 'rgb(238,51,94)' }}
-                                onClick={() => (DeleteRecord(row?.original?.id, deleteRole, showNotification))} />
+                                onClick={() => (DeleteRecord(row?.original?.id, deleteUser, showNotification))} />
                         </div>
                     </div>
                 </>

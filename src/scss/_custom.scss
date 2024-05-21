@@ -69,3 +69,18 @@
 .mantine-yzu17x {
     text-align: center;
 }
+
+.react-date-picker {
+    width: 100%;
+
+    .react-date-picker__wrapper {
+        border-radius: 0.375rem;
+        padding: 4.5px;
+        border-color: #dee2e6;
+    }
+    
+    &.is-invalid  .react-date-picker__wrapper {
+        border: 1px solid red;
+    }
+}
+

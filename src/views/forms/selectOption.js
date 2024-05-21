@@ -1,23 +1,27 @@
-import { CFormSelect } from '@coreui/react'
+import { CFormSelect, CFormLabel } from '@coreui/react'
 
 
-const SelectBox = ({ ariaLabel = 'select one', label = 'selectBox', value = '', disabled = false, feedbackInvalid = 'At least one record is required!', style = '', size = 'sm', id = 'validationSelect', required = false, ...props }) => {
+const SelectBox = ({ ariaLabel = 'select one', label = 'selectBox', value = '', disabled = false, feedbackInvalid = 'At least one record is required!', style = '', size = 'sm', id = 'validationSelect', required = false, options = [], ...props }) => {
     return (
-        <CFormSelect
-            aria-label={ariaLabel}
-            label={label}
-            value={value}
-            onChange={props?.onChange}
-            feedbackInvalid={feedbackInvalid}
-            id={id}
-            options={props?.options}
-            disabled={disabled}
-            required={required}
-        >
-            {/* {
-                props?.options && props?.options.length > 0 ? 'aave che' : 'ny aavtu'
-            } */}
-        </CFormSelect>
+        <>
+            <CFormLabel ><strong>{label}</strong></CFormLabel>
+            <CFormSelect
+                value={value} // this value set the data in the select box in edit mode
+                onChange={props?.onChange}
+                feedbackInvalid={feedbackInvalid}
+                id={id}
+                disabled={disabled}
+                required={required}
+            >
+                <option value=''>{ariaLabel}</option>
+                {
+                    options &&
+                    options.map((item, index) => (
+                        <option key={index} value={item?.value}>{item?.label}</option>
+                    ))
+                }
+            </CFormSelect>
+        </>
     );
 };
 
