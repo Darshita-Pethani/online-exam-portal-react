@@ -57,8 +57,8 @@ const RoleList = () => {
                     <UpdateStatus
                         data={row}
                         tableNameProp='roles'
-                    // writeAccess={common?.access?.write_access ? true : false}
-                    // setStatusUpdate={setStatusUpdate} // no need to add
+                        // writeAccess={common?.access?.write_access ? true : false}
+                        setStatusUpdate={setStatusUpdate}
                     />
                 </>
             ),
@@ -100,9 +100,11 @@ const RoleList = () => {
         });
     }
 
+    // userEffect ma roleList arry etle nathi lakhyi km k network ma eni apis call tha tha kare che
+    // to statusUpdate thi thy jase aama khali statusUpdate pr j list joiye etle
     useEffect(() => {
         roleData();
-    }, [defaultFilter, roleList]);
+    }, [defaultFilter, statusUpdate]);
 
     return (
         <CCardBody>
@@ -119,14 +121,16 @@ const RoleList = () => {
                 />
             </div>
 
-            <TableContainer
-                title='Role List'
-                columns={columns}
-                data={roleList}
-                defaultFilter={defaultFilter}
-                setDefaultFilter={setDefaultFilter}
-                rowCount={rowCount}
-            />
+            <div style={{ marginBottom: '24px' }}>
+                <TableContainer
+                    title='Role List'
+                    columns={columns}
+                    data={roleList}
+                    defaultFilter={defaultFilter}
+                    setDefaultFilter={setDefaultFilter}
+                    rowCount={rowCount}
+                />
+            </div>
         </CCardBody>
     )
 }

@@ -30,7 +30,8 @@ const UpdateStatus = ({ data, tableNameProp, writeAccess, setStatusUpdate }) => 
         const response = await statusUpdateApi({ id, status, tableName: tableNameProp });
 
         if (response?.status === 200) {
-            // setStatusUpdate(prev => !prev);
+            // aa jaruri che listing tarat show karva
+            setStatusUpdate(prev => !prev);
             showNotification({
                 title: "Success",
                 message: message,
@@ -38,7 +39,7 @@ const UpdateStatus = ({ data, tableNameProp, writeAccess, setStatusUpdate }) => 
                 isOpen: true
             });
         } else {
-            // setStatusUpdate(prev => !prev);
+            setStatusUpdate(prev => !prev);
             showNotification({
                 title: "Error",
                 message: response?.data?.message,

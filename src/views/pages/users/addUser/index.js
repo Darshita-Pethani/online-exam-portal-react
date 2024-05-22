@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { CCard, CCardBody, CCol, CForm, CFormCheck, CFormInput, CImage, CRow } from '@coreui/react'
+import React, { useEffect, useState } from 'react'
+import { CCard, CCardBody, CCol, CForm, CFormInput, CImage, CRow } from '@coreui/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { allDispatch } from '../../../../allDispatch'
 import { InputBox, InputTextArea } from '../../../forms/inputBox'
@@ -9,10 +9,8 @@ import { addUser, getUsersDataByIdApi, updateUser } from '../../../../api/user'
 import { roleDataApi } from '../../../../api/role'
 import FormButton from '../../../forms/formButton'
 import RadioButton from '../../../forms/radioButton'
-import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
-import moment from 'moment'
 import { FormDatePicker } from '../../../forms/datePicker'
 
 const AddUser = () => {
@@ -41,24 +39,31 @@ const AddUser = () => {
     const [formDateError, setFormDateError] = useState('');
 
     const validateDateOfBirth = () => {
-        if (!addData.date_of_birth) {
+        if (!addData?.date_of_birth || addData?.date_of_birth === null) {
             setFormDateError('Date of Birth is required');
             return false;
+        } else {
+            setFormDateError('');
+            return true;
         }
-        setFormDateError('');
-        return true;
     };
 
     const handleSubmit = async (event) => {
         let formData = new FormData();
         const form = event.currentTarget;
 
+        event.preventDefault()
+        event.stopPropagation()
+
         if (form.checkValidity() === false) {
             validateDateOfBirth();
-            event.preventDefault()
-            event.stopPropagation()
+            form.classList.add('was-validated');
+            setValidated(true);
         } else {
-            event.preventDefault();
+            validateDateOfBirth();
+            if (!validateDateOfBirth()) {
+                return;
+            }
             if (location?.state?.editData) {
                 formData.append("id", location?.state?.id);
                 formData.append("first_name", addData?.first_name);
@@ -124,8 +129,7 @@ const AddUser = () => {
                 }
             }
         }
-        form.classList.add('was-validated');
-        setValidated(true);
+
     }
 
     const getUserDataById = async (id) => {
@@ -347,7 +351,7 @@ const AddUser = () => {
                                     />
                                 </div>
 
-                                {/* date time picker */}
+                                {/* date picker */}
                                 <div className='col-12 col-md-6 mb-3 fw-600'>
                                     <FormDatePicker
                                         value={addData?.date_of_birth}
@@ -370,7 +374,7 @@ const AddUser = () => {
                                         type="file"
                                         name='image'
                                         onChange={handleImageUpload}
-                                        required={true}
+                                        required={!(location?.state?.editData && addData?.image !== null) ? true : false}
                                     />
                                     {
                                         images &&

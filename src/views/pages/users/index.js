@@ -23,6 +23,7 @@ const UsersList = () => {
     const [rowCount, setRowCount] = useState(0);
     const [statusUpdate, setStatusUpdate] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [visible, setVisible] = useState(false);
 
     const [defaultFilter, setDefaultFilter] = useState({
         "currentPage": 1,
@@ -40,7 +41,6 @@ const UsersList = () => {
             navigate("/");
         }
     }
-    const [visible, setVisible] = useState(false);
     const columns = useMemo(() => [
         {
             accessorKey: 'full_name',
@@ -108,15 +108,11 @@ const UsersList = () => {
                     <>
                         {row?.original?.image ?
                             <>
-                                <div onClick={() => {
-                                    setSelectedImage(row?.original?.image);
-                                    setVisible(true);
-                                }}
-                                >
+                                <div onClick={() => { setSelectedImage(row?.original?.image), setVisible(true) }}>
                                     <img
                                         src={row?.original?.image}
                                         alt='user img'
-                                        style={{ objectFit: 'cover', width: '100px', height: '100px', cursor: 'pointer' }}
+                                        style={{ objectFit: 'cover', width: '75px', height: '75px', cursor: 'pointer' }}
                                     />
                                 </div>
                             </>
@@ -138,8 +134,8 @@ const UsersList = () => {
                     <UpdateStatus
                         data={row}
                         tableNameProp='users'
-                    // writeAccess={common?.access?.write_access ? true : false}
-                    // setStatusUpdate={setStatusUpdate} // no need to add
+                        // writeAccess={common?.access?.write_access ? true : false}
+                        setStatusUpdate={setStatusUpdate}
                     />
                 </>
             ),
@@ -183,7 +179,7 @@ const UsersList = () => {
 
     useEffect(() => {
         usersData();
-    }, [defaultFilter]);
+    }, [defaultFilter, statusUpdate]);
 
     return (
         <CCardBody>
@@ -200,14 +196,16 @@ const UsersList = () => {
                 />
             </div>
 
-            <TableContainer
-                title='User List'
-                columns={columns}
-                data={usersList}
-                defaultFilter={defaultFilter}
-                setDefaultFilter={setDefaultFilter}
-                rowCount={rowCount}
-            />
+            <div style={{ marginBottom: '24px' }}>
+                <TableContainer
+                    title='User List'
+                    columns={columns}
+                    data={usersList}
+                    defaultFilter={defaultFilter}
+                    setDefaultFilter={setDefaultFilter}
+                    rowCount={rowCount}
+                />
+            </div>
 
             {
                 visible &&
@@ -216,6 +214,7 @@ const UsersList = () => {
                     setVisible={setVisible}
                     src={selectedImage}
                     alt='user img'
+                    style={{ width: '300px', height: '300px' }}
                 />
             }
         </CCardBody>
