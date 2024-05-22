@@ -374,6 +374,7 @@ const AddUser = () => {
                                         type="file"
                                         name='image'
                                         onChange={handleImageUpload}
+                                        accept='image/*' // to show only images in choose file popup
                                         required={!(location?.state?.editData && addData?.image !== null) ? true : false}
                                     />
                                     {
