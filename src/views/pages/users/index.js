@@ -159,7 +159,7 @@ const UsersList = () => {
 
                         <div style={{ background: "rgb(238 51 94 / 10%)" }} className='editDeleteButton delete'>
                             <MdDelete style={{ color: 'rgb(238,51,94)' }}
-                                onClick={() => (DeleteRecord(row?.original?.id, deleteUser, showNotification))} />
+                                onClick={() => (DeleteRecord(row?.original?.id, deleteUser, showNotification, setStatusUpdate))} />
                         </div>
                     </div>
                 </>

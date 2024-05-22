@@ -1,19 +1,12 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
 import {
-  cilBell,
-  cilCalculator,
-  cilChartPie,
-  cilCursor,
-  cilDescription,
-  cilDrop,
-  cilNotes,
-  cilPencil,
-  cilPuzzle,
-  cilSpeedometer,
-  cilStar,
+  cilSpeedometer
 } from '@coreui/icons'
-import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
+import { FaUsers } from "react-icons/fa";
+import { CNavItem } from '@coreui/react'
+import { ImUserTie } from "react-icons/im";
+import { SiGitbook } from "react-icons/si";
 
 const _nav = [
   {
@@ -317,14 +310,21 @@ const _nav = [
     component: CNavItem,
     name: 'Role',
     to: 'pages/role/list',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+    icon: <ImUserTie customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
   },
   // user 
   {
     component: CNavItem,
     name: 'Users',
     to: 'pages/users/list',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+    icon: <FaUsers customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
+  },
+  // subject
+  {
+    component: CNavItem,
+    name: 'Subject',
+    to: 'pages/subject/list',
+    icon: <SiGitbook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
   },
 ]
 

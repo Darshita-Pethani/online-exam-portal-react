@@ -11,12 +11,13 @@ import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { DeleteRecord } from '../../../components/deleteRecord'
 import FormButton from '../../forms/formButton'
+import { deleteSubject, subjectDataApi } from '../../../api/subject'
 
-const RoleList = () => {
+const SubjectList = () => {
     const navigate = useNavigate();
     const { showNotification } = allDispatch();
 
-    const [roleList, setRoleList] = useState([]);
+    const [subjectList, setSubjectList] = useState([]);
     const [rowCount, setRowCount] = useState(0);
     const [statusUpdate, setStatusUpdate] = useState(false);
 
@@ -27,10 +28,10 @@ const RoleList = () => {
         "filters": []
     });
 
-    const roleData = async () => {
-        const response = await roleDataApi(defaultFilter);
+    const subjectData = async () => {
+        const response = await subjectDataApi(defaultFilter);
         if (response?.status === 200) {
-            setRoleList(response?.data?.data?.rows);
+            setSubjectList(response?.data?.data?.rows);
             setRowCount(response?.data?.data?.count);
         } else if (response?.status === 401) {
             navigate("/");
@@ -39,8 +40,16 @@ const RoleList = () => {
 
     const columns = useMemo(() => [
         {
+            accessorKey: 'Added By',
+            header: 'ADDED BY',
+            enableColumnFilter: false,
+            enableSorting: false,
+            size: 150,
+            Cell: ({ row }) => <>{row?.original?.user?.full_name || "-"}</>
+        },
+        {
             accessorKey: 'name',
-            header: 'ROLE NAME',
+            header: 'NAME',
             size: 150,
             Cell: ({ row }) => <>{row?.original?.name || "-"}</>
         },
@@ -56,7 +65,7 @@ const RoleList = () => {
                 <>
                     <UpdateStatus
                         data={row}
-                        tableNameProp='roles'
+                        tableNameProp='subjects' // table name
                         // writeAccess={common?.access?.write_access ? true : false}
                         setStatusUpdate={setStatusUpdate}
                     />
@@ -76,13 +85,13 @@ const RoleList = () => {
                         <div style={{ background: "rgb(88 86 214 / 8%)" }} className='editDeleteButton edit'
                         >
                             <CiEdit style={{ color: 'rgb(4 0 255)' }}
-                                onClick={() => getRoleDataById(row?.original?.id)}
+                                onClick={() => getSubjectDataById(row?.original?.id)}
                             />
                         </div>
 
                         <div style={{ background: "rgb(238 51 94 / 10%)" }} className='editDeleteButton delete'>
                             <MdDelete style={{ color: 'rgb(238,51,94)' }}
-                                onClick={() => (DeleteRecord(row?.original?.id, deleteRole, showNotification, setStatusUpdate))} />
+                                onClick={() => (DeleteRecord(row?.original?.id, deleteSubject, setStatusUpdate, showNotification))} />
                         </div>
                     </div>
                 </>
@@ -90,9 +99,10 @@ const RoleList = () => {
         },
     ], []);
 
+
     // Get role data by id
-    const getRoleDataById = async (id) => {
-        navigate('/pages/role/edit', {
+    const getSubjectDataById = async (id) => {
+        navigate('/pages/subject/edit', {
             state: {
                 id: id,
                 editData: true
@@ -100,10 +110,10 @@ const RoleList = () => {
         });
     }
 
-    // userEffect ma roleList arry etle nathi lakhyi km k network ma eni apis call tha tha kare che
+    // userEffect ma subjectList arry etle nathi lakhyi km k network ma eni apis call tha tha kare che
     // to statusUpdate thi thy jase aama khali statusUpdate pr j list joiye etle
     useEffect(() => {
-        roleData();
+        subjectData();
     }, [defaultFilter, statusUpdate]);
 
     return (
@@ -116,16 +126,16 @@ const RoleList = () => {
                     }}
                     hoverBgColor='#4846db'
                     hoverFontColor='white'
-                    label='Add Role'
-                    onClick={() => navigate('/pages/role/add')}
+                    label='Add Subject'
+                    onClick={() => navigate('/pages/subject/add')}
                 />
             </div>
 
             <div style={{ marginBottom: '24px' }}>
                 <TableContainer
-                    title='Role List'
+                    title='Subject List'
                     columns={columns}
-                    data={roleList}
+                    data={subjectList}
                     defaultFilter={defaultFilter}
                     setDefaultFilter={setDefaultFilter}
                     rowCount={rowCount}
@@ -135,4 +145,4 @@ const RoleList = () => {
     )
 }
 
-export default RoleList
+export default SubjectList

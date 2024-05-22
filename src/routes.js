@@ -58,6 +58,10 @@ const AddRole = React.lazy(() => import('./views/pages/role/addRole/index'));
 const UsersList = React.lazy(() => import('./views/pages/users/index'));
 const AddUser = React.lazy(() => import('./views/pages/users/addUser/index'));
 
+// subjects
+const SubjectList = React.lazy(() => import('./views/pages/subject/index'));
+const AddSubject = React.lazy(() => import('./views/pages/subject/addSubject/index'));
+
 
 
 const routes = [
@@ -117,6 +121,11 @@ const routes = [
   { path: '/pages/users/list', name: 'user', element: UsersList },
   { path: '/pages/users/add', name: 'add role', element: AddUser },
   { path: '/pages/users/edit', name: 'Edit role', element: AddUser },
+
+  // subject routes
+  { path: '/pages/subject/list', name: 'subject', element: SubjectList },
+  { path: '/pages/subject/add', name: 'add subject', element: AddSubject },
+  { path: '/pages/subject/edit', name: 'Edit subject', element: AddSubject },
 
 ]
 

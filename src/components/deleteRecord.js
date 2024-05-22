@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2'
 
-export const DeleteRecord = (id, DeleteRecordApi, showNotification) => (
+export const DeleteRecord = (id, DeleteRecordApi, showNotification, setStatusUpdate) => (
     Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -13,6 +13,8 @@ export const DeleteRecord = (id, DeleteRecordApi, showNotification) => (
         if (result.isConfirmed) {
             const response = await DeleteRecordApi(id)
             if (response.status === 200) {
+                // aa update thse but je status hse a j rese etle listing useEffect ma ny aave to render vadhare network ma ny thay
+                setStatusUpdate(prev => !prev);
                 showNotification({
                     title: "Success",
                     message: response?.data?.message,
