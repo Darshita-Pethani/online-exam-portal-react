@@ -62,7 +62,17 @@ const AddUser = React.lazy(() => import('./views/pages/users/addUser/index'));
 const SubjectList = React.lazy(() => import('./views/pages/subject/index'));
 const AddSubject = React.lazy(() => import('./views/pages/subject/addSubject/index'));
 
+// exam
+const ExamList = React.lazy(() => import('./views/pages/exam/index'));
+const AddExam = React.lazy(() => import('./views/pages/exam/addExam/index'));
 
+// exam type
+const ExamTypeList = React.lazy(() => import('./views/pages/examType/index'));
+const AddExamType = React.lazy(() => import('./views/pages/examType/addExamType/index'));
+
+// standard
+const StandardList = React.lazy(() => import('./views/pages/standard/index'));
+const AddStandard = React.lazy(() => import('./views/pages/standard/addStandard/index'));
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -115,18 +125,32 @@ const routes = [
   // role routes
   { path: '/pages/role/list', name: 'role', element: RoleList },
   { path: '/pages/role/add', name: 'add role', element: AddRole },
-  { path: '/pages/role/edit', name: 'Edit role', element: AddRole },
+  { path: '/pages/role/edit', name: 'edit role', element: AddRole },
 
   // users routes
   { path: '/pages/users/list', name: 'user', element: UsersList },
   { path: '/pages/users/add', name: 'add role', element: AddUser },
-  { path: '/pages/users/edit', name: 'Edit role', element: AddUser },
+  { path: '/pages/users/edit', name: 'edit role', element: AddUser },
 
   // subject routes
   { path: '/pages/subject/list', name: 'subject', element: SubjectList },
   { path: '/pages/subject/add', name: 'add subject', element: AddSubject },
-  { path: '/pages/subject/edit', name: 'Edit subject', element: AddSubject },
+  { path: '/pages/subject/edit', name: 'edit subject', element: AddSubject },
 
+  // exam
+  { path: '/pages/exam/list', name: 'exam', element: ExamList },
+  { path: '/pages/exam/add', name: 'add exam', element: AddExam },
+  { path: '/pages/exam/edit', name: 'edit exam', element: AddExam },
+
+  // exam type
+  { path: '/pages/exam-type/list', name: 'exam type', element: ExamTypeList },
+  { path: '/pages/exam-type/add', name: 'add exam type', element: AddExamType },
+  { path: '/pages/exam-type/edit', name: 'edit exam type', element: AddExamType },
+
+   // standard
+   { path: '/pages/standard/list', name: 'exam type', element: StandardList },
+   { path: '/pages/standard/add', name: 'add exam type', element: AddStandard },
+   { path: '/pages/standard/edit', name: 'edit exam type', element: AddStandard },
 ]
 
 export default routes

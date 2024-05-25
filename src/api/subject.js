@@ -1,6 +1,6 @@
 import { callPostApi, callDeleteApi, callPutApi, callGetApi } from "./api";
 
-// Get role data api...
+// Get subject data api...
 export async function subjectDataApi(data) {
     try {
         const response = await callPostApi({ url: "subject/list", body: data });
@@ -10,7 +10,7 @@ export async function subjectDataApi(data) {
     }
 }
 
-// Delete role data by id api
+// Delete subject data by id api
 export async function deleteSubject(id) {
     try {
         const response = await callDeleteApi({ url: `subject/delete/${id}` });
@@ -20,7 +20,7 @@ export async function deleteSubject(id) {
     }
 }
 
-// Add role data by id api
+// Add subject data by id api
 export async function addSubject(data) {
     try {
         const response = await callPostApi({ url: "subject/add", body: data });
@@ -31,7 +31,7 @@ export async function addSubject(data) {
 }
 
 
-// Get role data by id api
+// Get subject data by id api
 export async function getSubjectDataByIdApi(id) {
     try {
         const response = await callGetApi({ url: `subject/${id}` });

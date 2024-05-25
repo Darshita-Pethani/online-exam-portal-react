@@ -12,15 +12,15 @@ export const DeleteRecord = (id, DeleteRecordApi, showNotification, setStatusUpd
     }).then(async (result) => {
         if (result.isConfirmed) {
             const response = await DeleteRecordApi(id)
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 // aa update thse but je status hse a j rese etle listing useEffect ma ny aave to render vadhare network ma ny thay
-                setStatusUpdate(prev => !prev);
                 showNotification({
                     title: "Success",
                     message: response?.data?.message,
                     status: 'success',
                     isOpen: true
                 });
+                setStatusUpdate(prev => !prev);
             }
 
         }

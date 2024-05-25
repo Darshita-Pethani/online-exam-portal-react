@@ -4,9 +4,10 @@ import {
   cilSpeedometer
 } from '@coreui/icons'
 import { FaUsers } from "react-icons/fa";
-import { CNavItem } from '@coreui/react'
+import { CNavGroup, CNavItem } from '@coreui/react'
 import { ImUserTie } from "react-icons/im";
 import { SiGitbook } from "react-icons/si";
+import { GiNotebook, GiStack } from "react-icons/gi";
 
 const _nav = [
   {
@@ -43,7 +44,7 @@ const _nav = [
   //   component: CNavGroup,
   //   name: 'Base',
   //   to: '/base',
-  //   icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+  //   // icon: <CIcon  customClassName="nav-icon" />,
   //   items: [
   //     {
   //       component: CNavItem,
@@ -319,12 +320,38 @@ const _nav = [
     to: 'pages/users/list',
     icon: <FaUsers customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
   },
+  // standard
+  {
+    component: CNavItem,
+    name: 'Standard',
+    to: 'pages/standard/list',
+    icon: <GiStack customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
+  },
   // subject
   {
     component: CNavItem,
     name: 'Subject',
     to: 'pages/subject/list',
     icon: <SiGitbook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
+  },
+  // exam
+  {
+    component: CNavGroup,
+    name: 'Exam',
+    to: 'pages/exam/list',
+    icon: <GiNotebook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Exam Type',
+        to: 'pages/exam-type/list',
+      },
+      {
+        component: CNavItem,
+        name: 'Exam',
+        to: 'pages/exam/list',
+      },
+    ],
   },
 ]
 
