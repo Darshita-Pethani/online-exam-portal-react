@@ -8,6 +8,7 @@ import { CNavGroup, CNavItem } from '@coreui/react'
 import { ImUserTie } from "react-icons/im";
 import { SiGitbook } from "react-icons/si";
 import { GiNotebook, GiStack } from "react-icons/gi";
+import { PiSealQuestionFill } from "react-icons/pi";
 
 const _nav = [
   {
@@ -333,6 +334,13 @@ const _nav = [
     name: 'Subject',
     to: 'pages/subject/list',
     icon: <SiGitbook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
+  },
+  // question types
+  {
+    component: CNavItem,
+    name: 'Question Type',
+    to: 'pages/question-type/list',
+    icon: <PiSealQuestionFill customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
   },
   // exam
   {

@@ -10,14 +10,13 @@ import { CiEdit } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
 import { DeleteRecord } from '../../../components/deleteRecord'
 import FormButton from '../../forms/formButton'
-import moment from 'moment'
-import { deleteExam, examDataApi } from '../../../api/exam'
+import { deleteQuestionType, questionTypeDataApi } from '../../../api/questionType'
 
-const ExamList = () => {
+const QuestionTypeList = () => {
     const navigate = useNavigate();
     const { showNotification } = allDispatch();
 
-    const [examList, setExamList] = useState([]);
+    const [questionTypeList, setQuestionTypeList] = useState([]);
     const [rowCount, setRowCount] = useState(0);
     const [statusUpdate, setStatusUpdate] = useState(false);
 
@@ -28,99 +27,22 @@ const ExamList = () => {
         "filters": []
     });
 
-    const examsData = async () => {
-        const response = await examDataApi(defaultFilter);
+    const roleData = async () => {
+        const response = await questionTypeDataApi(defaultFilter);
         if (response?.status === 200) {
-            setExamList(response?.data?.data?.rows);
+            setQuestionTypeList(response?.data?.data?.rows);
             setRowCount(response?.data?.data?.count);
         } else if (response?.status === 401) {
             navigate("/");
         }
     }
-    
+
     const columns = useMemo(() => [
         {
-            accessorKey: 'full_name',
-            header: 'FULL NAME',
-            size: 150,
-            enableColumnFilter: false,
-            enableSorting: false,
-            Cell: ({ row }) => <>{row?.original?.user?.full_name || "-"}</>
-        },
-        {
-            accessorKey: 'subject',
-            header: 'SUBJECT',
-            size: 150,
-            enableColumnFilter: false,
-            enableSorting: false,
-            Cell: ({ row }) => <>{row?.original?.subject?.name || "-"}</>
-        },
-        {
             accessorKey: 'name',
-            header: 'NAME',
+            header: 'QUESTION TYPE',
             size: 150,
-            Cell: ({ row }) => <>{row?.original?.exam_type?.name || "-"}</>
-        },
-        {
-            accessorKey: 'standard',
-            header: 'STANDARD',
-            size: 150,
-            defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.standard || "-"}</>
-        },
-        {
-            accessorKey: 'date',
-            header: 'EXAM DATE',
-            size: 150,
-            filterVariant: 'date',
-            Cell: ({ row }) => <>{row?.original?.date ? moment(row?.original?.date).format('DD-MM-YYYY') : "-"}</>
-        },
-        {
-            accessorKey: 'start_time',
-            header: 'START TIME',
-            size: 150,
-            Cell: ({ row }) => <>{row?.original?.start_time || "-"}</>
-        },
-        {
-            accessorKey: 'end_time',
-            header: 'END TIME',
-            size: 150,
-            defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.end_time}</>
-        },
-        {
-            accessorKey: 'exam_duration',
-            header: 'DURATION',
-            size: 150,
-            Cell: ({ row }) => <>{row?.original?.exam_duration}</>
-        },
-        {
-            accessorKey: 'total_questions',
-            header: 'TOTAL QUESTIONS',
-            size: 150,
-            defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.total_questions || "-"}</>
-        },
-        {
-            accessorKey: 'total_marks',
-            header: 'TOTAL MARKS',
-            size: 150,
-            defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.total_marks || "-"}</>
-        },
-        {
-            accessorKey: 'min_percentage',
-            header: 'MIN PERCENTILE',
-            size: 150,
-            defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.min_percentage || "-"}</>
-        },
-        {
-            accessorKey: 'description',
-            header: 'DESCRIPTION',
-            size: 150,
-            defaultHiddenColumn: true,
-            Cell: ({ row }) => <>{row?.original?.description || "-"}</>
+            Cell: ({ row }) => <>{row?.original?.name || "-"}</>
         },
         {
             accessorKey: 'status',
@@ -134,7 +56,7 @@ const ExamList = () => {
                 <>
                     <UpdateStatus
                         data={row}
-                        tableNameProp='exams'
+                        tableNameProp='question_types'
                         // writeAccess={common?.access?.write_access ? true : false}
                         setStatusUpdate={setStatusUpdate}
                     />
@@ -154,13 +76,13 @@ const ExamList = () => {
                         <div style={{ background: "rgb(88 86 214 / 8%)" }} className='editDeleteButton edit'
                         >
                             <CiEdit style={{ color: 'rgb(4 0 255)' }}
-                                onClick={() => getExamDataById(row?.original?.id)}
+                                onClick={() => getQuestionTypeDataById(row?.original?.id)}
                             />
                         </div>
 
                         <div style={{ background: "rgb(238 51 94 / 10%)" }} className='editDeleteButton delete'>
                             <MdDelete style={{ color: 'rgb(238,51,94)' }}
-                                onClick={() => (DeleteRecord(row?.original?.id, deleteExam, showNotification, setStatusUpdate))} />
+                                onClick={() => (DeleteRecord(row?.original?.id, deleteQuestionType, showNotification, setStatusUpdate))} />
                         </div>
                     </div>
                 </>
@@ -168,9 +90,9 @@ const ExamList = () => {
         },
     ], []);
 
-    // Get role data by id
-    const getExamDataById = async (id) => {
-        navigate('/pages/exam/edit', {
+    // Get question type data by id
+    const getQuestionTypeDataById = async (id) => {
+        navigate('/pages/question-type/edit', {
             state: {
                 id: id,
                 editData: true
@@ -178,8 +100,10 @@ const ExamList = () => {
         });
     }
 
+    // userEffect ma questionTypeList arry etle nathi lakhyi km k network ma eni apis call tha tha kare che
+    // to statusUpdate thi thy jase aama khali statusUpdate pr j list joiye etle
     useEffect(() => {
-        examsData();
+        roleData(defaultFilter);
     }, [defaultFilter, statusUpdate]);
 
     return (
@@ -192,16 +116,16 @@ const ExamList = () => {
                     }}
                     hoverBgColor='#4846db'
                     hoverFontColor='white'
-                    label='Add Exam'
-                    onClick={() => navigate('/pages/exam/add')}
+                    label='Add Question Type'
+                    onClick={() => navigate('/pages/question-type/add')}
                 />
             </div>
 
             <div style={{ marginBottom: '24px' }}>
                 <TableContainer
-                    title='Exam List'
+                    title='Question Type List'
                     columns={columns}
-                    data={examList}
+                    data={questionTypeList}
                     defaultFilter={defaultFilter}
                     setDefaultFilter={setDefaultFilter}
                     rowCount={rowCount}
@@ -211,4 +135,4 @@ const ExamList = () => {
     )
 }
 
-export default ExamList
+export default QuestionTypeList

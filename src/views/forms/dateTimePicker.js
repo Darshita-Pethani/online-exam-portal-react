@@ -9,15 +9,15 @@ import 'react-time-picker/dist/TimePicker.css';
 import 'react-clock/dist/Clock.css';
 
 //date picker
-export const FormDatePicker = ({ value, setAddData, formDateError, setFormDateError, label = 'Enter Date', name = 'Date', ...props }) => {
+export const FormDatePicker = ({ value, setAddData, error, setError, label = 'Enter Date', name = 'Date', ...props }) => {
     const handleDateChange = (date) => {
         if (date && moment(date).isValid()) {
             const momentDate = moment(date).format('YYYY-MM-DD');
             setAddData((prevData) => ({ ...prevData, [props?.formKeyName]: momentDate }));
-            setFormDateError('');
+            setError('');
         } else {
             setAddData((prevData) => ({ ...prevData, [props?.formKeyName]: '' }));
-            setFormDateError('Invalid Date');
+            setError('Invalid Date');
         }
     };
 
@@ -28,23 +28,24 @@ export const FormDatePicker = ({ value, setAddData, formDateError, setFormDateEr
                 value={value}
                 onChange={handleDateChange}
                 name={name}
-                className={formDateError ? 'is-invalid' : ''}
+                className={error ? 'is-invalid' : ''}
             />
-            {formDateError && <div className="invalid-feedback d-block">{formDateError}</div>}
+            {error && <div className="invalid-feedback d-block">{error}</div>}
         </>
     );
 };
 
 // time picker
-export const FormTimePicker = ({ value, setAddData, formTimeError, setFormTimeError, label = 'Enter Time', name = 'Time', ...props }) => {
+export const FormTimePicker = ({ value, setAddData, error, setError, label = 'Enter Time', name = 'Time', ...props }) => {
     const handleTimeChange = (time) => {
-        if (moment(time).isValid()) {
-            const momentTime = moment(time).format('HH:mm');
-            setAddData((prevData) => ({ ...prevData, [props?.formKeyName]: momentTime }));
-            setFormTimeError('');
+        console.log('time: ', time);
+
+        if (time && moment(time, 'HH:mm', true).isValid()) {
+            setAddData((prevData) => ({ ...prevData, [props?.formKeyName]: time }));
+            setError('');
         } else {
             setAddData((prevData) => ({ ...prevData, [props?.formKeyName]: '' }));
-            setFormTimeError('Invalid Time');
+            setError('Invalid Time');
         }
     };
 
@@ -55,9 +56,9 @@ export const FormTimePicker = ({ value, setAddData, formTimeError, setFormTimeEr
                 value={value}
                 onChange={handleTimeChange}
                 name={name}
-                className={formTimeError ? 'is-invalid' : ''}
+                className={error ? 'is-invalid' : ''}
             />
-            {formTimeError && <div className="invalid-feedback d-block">{formTimeError}</div>}
+            {error && <div className="invalid-feedback d-block">{error}</div>}
         </>
     );
 };

@@ -13,6 +13,9 @@ import { addExam, getExamDataByIdApi, updateExamDataApi } from '../../../../api/
 import { subjectDataApi } from '../../../../api/subject'
 import { examTypeDataApi } from '../../../../api/examType'
 import { standardDataApi } from '../../../../api/standard'
+import { ValidationTag } from '../../../../validation'
+import RadioCheckBoxButton from '../../../forms/radioCheckBoxButton'
+import { questionTypeDataApi } from '../../../../api/questionType'
 
 const AddExam = () => {
     const { showNotification } = allDispatch();
@@ -32,60 +35,27 @@ const AddExam = () => {
         end_time: '',
         description: '',
         min_percentage: '',
-        status: ''
+        status: '',
+        questionType: [],
     });
-    
-    const [formDateError, setFormDateError] = useState('');
 
-    const validateExamDate = () => {
-        if (!addData?.date || addData?.date === null) {
-            setFormDateError('Exam Date is required');
-            return false;
-        } else {
-            setFormDateError('');
-            return true;
-        }
-    };
-    const [formTimeError, setFormTimeError] = useState('');
-
-    const validateStartTime = () => {
-        if (!addData?.date || addData?.date === null) {
-            setFormTimeError('Start Time is required');
-            return false;
-        } else {
-            setFormTimeError('');
-            return true;
-        }
-    };
+    const [error, setError] = useState('');
 
     const handleSubmit = async (event) => {
-        let formData = new FormData();
         const form = event.currentTarget;
 
         event.preventDefault()
         event.stopPropagation()
 
         if (form.checkValidity() === false) {
-            validateExamDate();
-            validateStartTime();
             form.classList.add('was-validated');
             setValidated(true);
+            ValidationTag();
+            setError(ValidationTag(addData))
         } else {
-            validateExamDate();
-            validateStartTime();
-            if (!validateExamDate()) {
-                return;
-            }
+
             if (location?.state?.editData) {
-                formData.append("id", location?.state?.id);
-                formData.append("subject_id", addData?.subject_id);
-                formData.append("name", addData?.last_name);
-                formData.append("total_questions", addData?.total_questions);
-                formData.append("total_marks", addData?.total_marks);
-                formData.append("start_time", addData?.start_time);
-                formData.append("end_time", addData?.end_time);
-                formData.append("status", addData?.status);
-                let response = await updateExamDataApi(formData);
+                let response = await updateExamDataApi(addData);
                 if (response.status === 200) {
                     showNotification({
                         title: "Success",
@@ -104,14 +74,7 @@ const AddExam = () => {
                     });
                 }
             } else {
-                formData.append("subject_id", addData?.subject_id);
-                formData.append("name", addData?.last_name);
-                formData.append("total_questions", addData?.total_questions);
-                formData.append("total_marks", addData?.total_marks);
-                formData.append("start_time", addData?.start_time);
-                formData.append("end_time", addData?.end_time);
-                formData.append("status", addData?.status);
-                let response = await addExam(formData);
+                let response = await addExam({ ...addData, questionType: addQuestionTypeData });
                 if (response.status === 200) {
                     showNotification({
                         title: "Success",
@@ -134,6 +97,7 @@ const AddExam = () => {
 
     }
 
+
     const getExamDataById = async (id) => {
         const response = await getExamDataByIdApi(id);
         if (response?.status === 200) {
@@ -142,14 +106,6 @@ const AddExam = () => {
             navigate('/')
         }
     }
-
-    console.log("addData >>", addData);
-
-    useEffect(() => {
-        if (location?.state?.editData || location?.state?.id) {
-            getExamDataById(location?.state?.id);
-        }
-    }, []);
 
     // subjects data
     const [subjectData, setSubjectData] = useState([]);
@@ -201,6 +157,7 @@ const AddExam = () => {
         }
     }
 
+    // standard data
     const [standardData, setStandard] = useState([]);
     const getStandardData = async () => {
         try {
@@ -225,15 +182,72 @@ const AddExam = () => {
         }
     }
 
+    // question type data
+    const [questionTypeData, setQuestionTypeData] = useState([]);
+    const getQuestionType = async () => {
+        try {
+            const response = await questionTypeDataApi({
+                filters: [{
+                    id: 'status',
+                    value: 1
+                }]
+            });
+
+            if (response?.status === 200) {
+                if (response.data?.data?.rows) {
+                    let questionType = response.data.data.rows.map(type => ({
+                        label: type?.name,
+                        value: type?.id,
+                        id: type?.id
+                    }));
+                    setQuestionTypeData(questionType);
+                }
+            }
+        } catch (error) {
+            console.log('error:', error);
+        }
+    }
+    console.log('questionTypeData: state data ', questionTypeData);
+
     useEffect(() => {
         getSubjectData();
         getExamTypeData();
         getStandardData();
+        getQuestionType();
+
+        if (location?.state?.editData || location?.state?.id) {
+            getExamDataById(location?.state?.id);
+        }
+
     }, []);
 
-    const handleTimeChange = (time) => {
-        setAddData({ ...addData, start_time: time })
+    // if change start time then null end time
+    useEffect(() => {
+        if (addData?.start_time) {
+            setAddData({ ...addData, end_time: '' })
+        }
+    }, [addData?.start_time]);
+
+    const darshita = (e) => {
+        let checked = e.target.checked;
+        let value = e.target.value;
+        setAddData(prevState => {
+            let newQuestionType;
+            if (checked) {
+                newQuestionType = [...prevState.questionType, { question_type_id: value }];
+            } else {
+                newQuestionType = prevState.questionType.filter(qt => qt.question_type_id !== value);
+            }
+            return { ...prevState, questionType: newQuestionType };
+        });
     }
+    const ok = addData?.questionType.filter(item1 => {
+        return questionTypeData.filter(item2 => item2?.id_rt === item1?.id_rt)
+    });
+    const excludedPerson = addData?.questionType.map(
+        (person1) => !questionTypeData.some((person2) => person1.value === person2.value)
+    );
+    console.log("ok >>", excludedPerson);
     return (
         <CRow className="justify-content-center">
             <CCol lg={10}>
@@ -250,6 +264,7 @@ const AddExam = () => {
                             validated={validated}
                             onSubmit={handleSubmit}
                         >
+
                             <div className='row'>
                                 {/* add subject */}
                                 <div className='col-12 col-md-6 mb-3'>
@@ -325,15 +340,15 @@ const AddExam = () => {
                                     />
                                 </div>
 
-                                {/* date picker */}
+                                {/* exam date */}
                                 <div className='col-12 col-md-6 mb-3 fw-600'>
                                     <FormDatePicker
                                         value={addData?.date}
                                         label="Exam Date"
                                         name='Exam Date'
                                         setAddData={setAddData}
-                                        setFormDateError={setFormDateError}
-                                        formDateError={formDateError}
+                                        setError={setError}
+                                        error={error?.date}
                                         formKeyName='date'
                                     />
                                 </div>
@@ -346,9 +361,9 @@ const AddExam = () => {
                                         label="Duration"
                                         placeholder="Duration"
                                         type="Text"
-                                        name='duration'
-                                        value={addData?.duration}
-                                        onChange={(event) => setAddData({ ...addData, duration: event.target.value })}
+                                        name='exam_duration'
+                                        value={addData?.exam_duration}
+                                        onChange={(event) => setAddData({ ...addData, exam_duration: event.target.value })}
                                         // onChange={handleChange}
                                         required={true}
                                     />
@@ -361,11 +376,92 @@ const AddExam = () => {
                                         label="Start Time"
                                         name='Start Time'
                                         setAddData={setAddData}
-                                        setFormTimeError={setFormTimeError}
-                                        formTimeError={formTimeError}
+                                        setError={setError}
+                                        error={error?.start_time}
                                         formKeyName='start_time'
                                     />
                                 </div>
+
+                                {/* end time */}
+                                <div className='col-12 col-md-6 mb-3 fw-600 '>
+                                    <FormTimePicker
+                                        value={addData?.end_time}
+                                        label="End Time"
+                                        name='End Time'
+                                        setAddData={setAddData}
+                                        setError={setError}
+                                        error={error?.end_time}
+                                        formKeyName='end_time'
+                                    />
+                                </div>
+
+                                {/* Min Percentage */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputBox
+                                        feedbackInvalid="Min Percentage is required"
+                                        id="validationUserName"
+                                        label="Min Percentage"
+                                        placeholder="Min Percentage"
+                                        type="Text"
+                                        name='min_percentage'
+                                        value={addData?.min_percentage}
+                                        onChange={(event) => setAddData({ ...addData, min_percentage: event.target.value })}
+                                        // onChange={handleChange}
+                                        required={true}
+                                    />
+                                </div>
+
+                                {/* description */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <InputTextArea
+                                        feedbackInvalid="Description is required"
+                                        id="validationDescription"
+                                        label="Description"
+                                        placeholder="Description"
+                                        name='description'
+                                        value={addData?.description}
+                                        onChange={(event) => setAddData({ ...addData, description: event.target.value })}
+                                        rows={3}
+                                        required={true}
+                                    />
+                                </div>
+
+                                {/* question type */}
+                                <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    <RadioCheckBoxButton
+                                        label='Question Type'
+                                        id="flexGenderQuestionType"
+                                        name="questionType"
+                                        radioCheckBoxButtonData={questionTypeData}
+                                        value={addData?.questionType?.question_type_id}
+                                        type='checkbox'
+                                        onChange={(e) => darshita(e)}
+                                        style={{ gap: '20px' }}
+                                        required={true}
+                                        checked={addData?.questionType}
+                                    />
+                                </div>
+                                {
+                                    // addData?.questionType?.map((questionType) => {
+                                    //     questionType?.question_type_id &&
+                                    //         console.log("aama aayu",questionType),
+                                    //         <div className='col-12 col-md-6 mb-3 fw-600'>
+                                    //             <InputBox
+                                    //                 ariaLabel="Select Subject"
+                                    //                 label={`Number of Question`}
+                                    //                 value={addData?.subject_id}
+                                    //                 onChange={(event) => setAddData({ ...addData, subject_id: event.target.value })}
+                                    //                 feedbackInvalid="Subject is required"
+                                    //                 id="validationSubject"
+                                    //                 options={subjectData}
+                                    //                 required={true}
+                                    //             />
+                                    //         </div>
+                                    // })
+                                    addData?.questionType.map(() => {
+                                        const ans = (person1) => !questionTypeData.some((person2) => person1.value === person2.value)
+                                    })
+                                }
 
                                 {/* status */}
                                 <div className='col-12 col-md-6 mb-3'>

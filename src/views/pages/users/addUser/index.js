@@ -8,10 +8,9 @@ import SelectBox from '../../../forms/selectOption'
 import { addUser, getUsersDataByIdApi, updateUser } from '../../../../api/user'
 import { roleDataApi } from '../../../../api/role'
 import FormButton from '../../../forms/formButton'
-import RadioButton from '../../../forms/radioButton'
-import 'react-date-picker/dist/DatePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import { FormDatePicker } from '../../../forms/datePicker'
+import { ValidationTag } from '../../../../validation'
+import { FormDatePicker } from '../../../forms/dateTimePicker'
+import RadioCheckBoxButton from '../../../forms/radioCheckBoxButton'
 
 const AddUser = () => {
     const { showNotification } = allDispatch();
@@ -36,17 +35,17 @@ const AddUser = () => {
         imageName: ''
     });
 
-    const [formDateError, setFormDateError] = useState('');
+    const [error, setError] = useState('');
 
-    const validateDateOfBirth = () => {
-        if (!addData?.date_of_birth || addData?.date_of_birth === null) {
-            setFormDateError('Date of Birth is required');
-            return false;
-        } else {
-            setFormDateError('');
-            return true;
-        }
-    };
+    // const validateDateOfBirth = () => {
+    //     if (!addData?.date_of_birth || addData?.date_of_birth === null) {
+    //         setError('Date of Birth is required');
+    //         return false;
+    //     } else {
+    //         setError('');
+    //         return true;
+    //     }
+    // };
 
     const handleSubmit = async (event) => {
         let formData = new FormData();
@@ -56,14 +55,15 @@ const AddUser = () => {
         event.stopPropagation()
 
         if (form.checkValidity() === false) {
-            validateDateOfBirth();
+            // validateDateOfBirth();
+            setError(ValidationTag(addData));
             form.classList.add('was-validated');
             setValidated(true);
         } else {
-            validateDateOfBirth();
-            if (!validateDateOfBirth()) {
-                return;
-            }
+            // validateDateOfBirth();
+            // if (!validateDateOfBirth()) {
+            //     return;
+            // }
             if (location?.state?.editData) {
                 formData.append("id", location?.state?.id);
                 formData.append("first_name", addData?.first_name);
@@ -351,15 +351,15 @@ const AddUser = () => {
                                     />
                                 </div>
 
-                                {/* date picker */}
+                                {/* date of birth */}
                                 <div className='col-12 col-md-6 mb-3 fw-600'>
                                     <FormDatePicker
                                         value={addData?.date_of_birth}
                                         label="Date of Birth"
                                         name='Date of Birth'
                                         setAddData={setAddData}
-                                        setFormDateError={setFormDateError}
-                                        formDateError={formDateError}
+                                        setError={setError}
+                                        error={error}
                                         formKeyName='date_of_birth'
                                     />
                                 </div>
@@ -386,12 +386,12 @@ const AddUser = () => {
 
                                 {/* gender */}
                                 <div className='col-12 col-md-6 mb-3 fw-600'>
-                                    <RadioButton
+                                    <RadioCheckBoxButton
                                         label='Gender'
                                         type="radio"
                                         id="flexGenderRadioBtn"
                                         name="gender"
-                                        radioButtonData={radioButtonData}
+                                        radioCheckBoxButtonData={radioButtonData}
                                         value={addData?.gender}
                                         onChange={(event) => setAddData({ ...addData, gender: event.target.value })}
                                         style={{ gap: '20px' }}

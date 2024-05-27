@@ -74,6 +74,10 @@ const AddExamType = React.lazy(() => import('./views/pages/examType/addExamType/
 const StandardList = React.lazy(() => import('./views/pages/standard/index'));
 const AddStandard = React.lazy(() => import('./views/pages/standard/addStandard/index'));
 
+// question type
+const QuestionTypeList = React.lazy(() => import('./views/pages/questionType/index'));
+const AddQuestionType = React.lazy(() => import('./views/pages/questionType/addQuestionType/index'));
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
@@ -151,6 +155,11 @@ const routes = [
    { path: '/pages/standard/list', name: 'exam type', element: StandardList },
    { path: '/pages/standard/add', name: 'add exam type', element: AddStandard },
    { path: '/pages/standard/edit', name: 'edit exam type', element: AddStandard },
+
+   // question type
+   { path: '/pages/question-type/list', name: 'question type', element: QuestionTypeList },
+   { path: '/pages/question-type/add', name: 'add question type', element: AddQuestionType },
+   { path: '/pages/question-type/edit', name: 'edit question type', element: AddQuestionType },
 ]
 
 export default routes
