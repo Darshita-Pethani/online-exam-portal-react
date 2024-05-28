@@ -179,7 +179,7 @@ const ExamList = () => {
     }
 
     useEffect(() => {
-        examsData();
+        examsData(defaultFilter);
     }, [defaultFilter, statusUpdate]);
 
     return (

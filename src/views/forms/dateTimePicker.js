@@ -10,6 +10,7 @@ import 'react-clock/dist/Clock.css';
 
 //date picker
 export const FormDatePicker = ({ value, setAddData, error, setError, label = 'Enter Date', name = 'Date', ...props }) => {
+
     const handleDateChange = (date) => {
         if (date && moment(date).isValid()) {
             const momentDate = moment(date).format('YYYY-MM-DD');
@@ -29,6 +30,7 @@ export const FormDatePicker = ({ value, setAddData, error, setError, label = 'En
                 onChange={handleDateChange}
                 name={name}
                 className={error ? 'is-invalid' : ''}
+                required={props?.required}
             />
             {error && <div className="invalid-feedback d-block">{error}</div>}
         </>
@@ -38,8 +40,7 @@ export const FormDatePicker = ({ value, setAddData, error, setError, label = 'En
 // time picker
 export const FormTimePicker = ({ value, setAddData, error, setError, label = 'Enter Time', name = 'Time', ...props }) => {
     const handleTimeChange = (time) => {
-        console.log('time: ', time);
-
+        
         if (time && moment(time, 'HH:mm', true).isValid()) {
             setAddData((prevData) => ({ ...prevData, [props?.formKeyName]: time }));
             setError('');
@@ -57,8 +58,9 @@ export const FormTimePicker = ({ value, setAddData, error, setError, label = 'En
                 onChange={handleTimeChange}
                 name={name}
                 className={error ? 'is-invalid' : ''}
+                required={props?.required}
             />
-            {error && <div className="invalid-feedback d-block">{error}</div>}
+            {error && <div className="invalid-feedback d-block">{error}</div>}  
         </>
     );
 };

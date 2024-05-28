@@ -2,7 +2,7 @@ export const ValidationTag = (value) => {
     let error = {}
 
     if (value?.start_time === "") {
-        error.start_time = "Start time required"
+        error.start_time = "Start time is required"
     } else {
         error.start_time = ""
     }
