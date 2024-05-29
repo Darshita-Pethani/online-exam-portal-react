@@ -49,7 +49,7 @@ const AddExam = () => {
         if (sumOfTotalQuestion === parseInt(addData?.total_questions)) {
             return true;
         }
-
+        console.log("total same nathi");
         showNotification({
             title: "Error",
             message: 'Total Question and Selected Question Type is not a same',
@@ -75,6 +75,7 @@ const AddExam = () => {
             }
 
             if (location?.state?.editData) {
+                
                 let response = await updateExamDataApi(addData);
                 if (response.status === 200) {
                     showNotification({

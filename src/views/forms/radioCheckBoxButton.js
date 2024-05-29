@@ -29,7 +29,8 @@ const RadioCheckBoxButton = ({ type = '', name = "flexRadioDefault", id = "flexR
                                     checkedId.includes(parseInt(item?.id))
                                     : (parseInt(value) === item?.value) === true ? parseInt(value) === item?.value : item?.defaultChecked
                             }
-                            required={props?.required}
+                            // require condition selected checkbox ni length mate che  
+                            required={props?.checked?.length > 0 ? false : props?.required}
                         />
                     ))
                 }
