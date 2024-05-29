@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { CCardBody } from '@coreui/react'
-import { useNavigate } from 'react-router-dom'
+import { CCardBody, CFormLabel } from '@coreui/react'
+import { Link, useNavigate } from 'react-router-dom'
 import TableContainer from '../../../components/TableContainer'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { statusData } from '../utils/helper'
@@ -12,6 +12,8 @@ import { DeleteRecord } from '../../../components/deleteRecord'
 import FormButton from '../../forms/formButton'
 import moment from 'moment'
 import { deleteExam, examDataApi } from '../../../api/exam'
+import { GrFormAdd } from "react-icons/gr";
+
 
 const ExamList = () => {
     const navigate = useNavigate();
@@ -37,7 +39,7 @@ const ExamList = () => {
             navigate("/");
         }
     }
-    
+
     const columns = useMemo(() => [
         {
             accessorKey: 'full_name',
@@ -162,13 +164,31 @@ const ExamList = () => {
                             <MdDelete style={{ color: 'rgb(238,51,94)' }}
                                 onClick={() => (DeleteRecord(row?.original?.id, deleteExam, showNotification, setStatusUpdate))} />
                         </div>
+
+                        <div
+                            style={{ background: "rgb(88 86 214)", width: '100%', minWidth: '120px', padding: '5px 5px', borderRadius: '20px', fontWeight: '600', color: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                            onClick={() => (addQuestionPage(row?.original?.id))}
+                        >
+                            <GrFormAdd style={{ fontSize: '25px' }} />
+                            <CFormLabel style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}>Add Question</CFormLabel>
+                        </div>
+
                     </div>
                 </>
             ),
         },
     ], []);
 
-    // Get role data by id
+    // add question page
+    const addQuestionPage = (id) => {
+        navigate('/pages/exam/question/add', {
+            state: {
+                exam_id: id
+            }
+        });
+    }
+
+    // Get exam data by id
     const getExamDataById = async (id) => {
         navigate('/pages/exam/edit', {
             state: {

@@ -78,6 +78,9 @@ const AddStandard = React.lazy(() => import('./views/pages/standard/addStandard/
 const QuestionTypeList = React.lazy(() => import('./views/pages/questionType/index'));
 const AddQuestionType = React.lazy(() => import('./views/pages/questionType/addQuestionType/index'));
 
+// question
+const AddQuestion = React.lazy(() => import('./views/pages/exam/addQuestion/index'));
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
@@ -125,7 +128,7 @@ const routes = [
   { path: '/widgets', name: 'Widgets', element: Widgets },
 
   // pages route
-  
+
   // role routes
   { path: '/pages/role/list', name: 'role', element: RoleList },
   { path: '/pages/role/add', name: 'add role', element: AddRole },
@@ -151,15 +154,19 @@ const routes = [
   { path: '/pages/exam-type/add', name: 'add exam type', element: AddExamType },
   { path: '/pages/exam-type/edit', name: 'edit exam type', element: AddExamType },
 
-   // standard
-   { path: '/pages/standard/list', name: 'exam type', element: StandardList },
-   { path: '/pages/standard/add', name: 'add exam type', element: AddStandard },
-   { path: '/pages/standard/edit', name: 'edit exam type', element: AddStandard },
+  // standard
+  { path: '/pages/standard/list', name: 'standard type', element: StandardList },
+  { path: '/pages/standard/add', name: 'add standard type', element: AddStandard },
+  { path: '/pages/standard/edit', name: 'edit standard type', element: AddStandard },
 
-   // question type
-   { path: '/pages/question-type/list', name: 'question type', element: QuestionTypeList },
-   { path: '/pages/question-type/add', name: 'add question type', element: AddQuestionType },
-   { path: '/pages/question-type/edit', name: 'edit question type', element: AddQuestionType },
+  // question type
+  { path: '/pages/question-type/list', name: 'question-type type', element: QuestionTypeList },
+  { path: '/pages/question-type/add', name: 'add question-type type', element: AddQuestionType },
+  { path: '/pages/question-type/edit', name: 'edit question-type type', element: AddQuestionType },
+
+  // question
+  { path: '/pages/exam/question/add', name: 'add question type', element: AddQuestion },
+  { path: '/pages/exam/question/edit', name: 'edit question type', element: AddQuestion },
 ]
 
 export default routes

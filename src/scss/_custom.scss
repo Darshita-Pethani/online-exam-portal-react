@@ -30,7 +30,8 @@
 
 // set edit and delete buttons
 .editDeleteButton {
-    width: 30px;
+    width: 100%;
+    min-width: 30px;
     background: rgba(88, 86, 214, 0.08);
     height: 30px;
     border-radius: 50%;
@@ -81,7 +82,7 @@
         border-color: #dee2e6;
     }
 
-    &.is-invalid .react-date-picker__wrapper ,
+    &.is-invalid .react-date-picker__wrapper,
     &.is-invalid .react-time-picker__wrapper {
         border: 1px solid red;
     }

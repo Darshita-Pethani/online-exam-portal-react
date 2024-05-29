@@ -1,7 +1,8 @@
 import { CFormInput, CFormTextarea, CFormLabel } from '@coreui/react'
 
 
-export const InputBox = ({ label = 'textBoxLabel', type = 'text', name = 'textBoxName', value = '', error, touched = '', disabled = false, margin = "normal", feedbackInvalid = 'Input is required!', style = '', size = 'sm', placeholder = 'Enter data', id = 'validationInput', ...props }) => {
+export const InputBox = ({ label = 'textBoxLabel', type = 'text', name = 'textBoxName', value = '', error, touched = '', disabled = false, margin = "normal", feedbackInvalid = 'Input is required!', size = 'sm', placeholder = 'Enter data', id = 'validationInput', ...props }) => {
+
     return (
         <>
             <CFormLabel><strong>{label}</strong></CFormLabel>
@@ -12,6 +13,7 @@ export const InputBox = ({ label = 'textBoxLabel', type = 'text', name = 'textBo
                 value={value}
                 type={type}
                 // size={size}
+                style={props?.style}
                 onChange={props?.onChange}
                 required={props?.required}
                 disabled={disabled}
