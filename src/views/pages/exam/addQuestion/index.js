@@ -105,7 +105,48 @@ const AddQuestion = () => {
     const getExamDataById = async (id) => {
         const response = await getExamDataByIdApi(id);
         if (response?.status === 200) {
-            setExamQuestionTypeData(response?.data?.data?.exam_questiontype_relations);
+            const question_relations = response?.data?.data?.exam_questiontype_relations;
+            let questionList = []
+            question_relations.map((qt_id) => {
+                // Base question data
+                const baseQuestion = {
+                    "question": "",
+                    "question_type_id": qt_id?.question_type_id,
+                    "marks_per_question": "",
+                    "ans": "",
+                }
+                // MCQ Type Question
+                if (qt_id?.question_type_id === 1) {
+                    for (let i = 1; i <= qt_id?.total_questions; i++) {
+                        questionList.push({
+                            ...baseQuestion,
+                            "que_id": `${qt_id?.question_type_id}-${i}`,
+                            "options": [
+                                {
+                                    "option_value": ""
+                                },
+                                {
+                                    "option_value": ""
+                                }
+                            ]
+                        });
+                    }
+                }
+                // Single Line Question
+                else {
+                    for (let i = 1; i <= qt_id?.total_questions; i++) {
+                        questionList.push({
+                            ...baseQuestion,
+                            "que_id": `${qt_id?.question_type_id}-${i}`,
+                        });
+                    }
+                }
+            })
+            setExamQuestionTypeData(question_relations);
+            setAddData({
+                ...addData,
+                questionList: questionList
+            })
         } else if (response?.status === 401) {
             navigate('/')
         }
@@ -133,41 +174,27 @@ const AddQuestion = () => {
     };
 
 
-    const addFelidValue = (value, name, i) => {
-        let updatedQuestions = [...addData.questionList];
-        updatedQuestions[i - 1] = {
-            ...updatedQuestions[i - 1],
+    const addFelidValue = (value, name, que_id) => {
+        console.log("adddata >> prev", addData);
+        let questionListCopy = [...addData.questionList];
+        const selectedQIndex = questionListCopy.findIndex(q => q.que_id === que_id)
+        questionListCopy[selectedQIndex] = {
+            ...questionListCopy[selectedQIndex],
             [name]: value
         };
-        addData.questionList[i - 1] = {
-            ...updatedQuestions[i - 1],
-            [name]: value
-        }
-        console.log('updatedQuestions: ', updatedQuestions);
-        // console.log("adddata >>", addData);
-        setAddData(addData);
+        console.log('questionListCopy: ', questionListCopy);
+        setAddData({
+            ...addData,
+            questionList: questionListCopy
+        });
     }
 
     console.log("adddata >>", addData);
     const formDetails = [];
     const renderForm = () => {
-        addData.questionList = [];
         examQuestionTypeData?.forEach((qt_id) => {
             if (qt_id?.question_type_id === 1) {
                 for (let i = 1; i <= qt_id?.total_questions; i++) {
-                    addData?.questionList.push({
-                        "question": "",
-                        "marks_per_question": "",
-                        "ans": "",
-                        "options": [
-                            {
-                                "option_value": ""
-                            },
-                            {
-                                "option_value": ""
-                            }
-                        ]
-                    });
                     formDetails.push(
                         <div>
                             <h5>MCQ</h5>
@@ -182,8 +209,8 @@ const AddQuestion = () => {
                                         type="Text"
                                         name='marks_per_question'
                                         style={{ width: '70px' }}
-                                        value={addData?.questionList[i - 1]?.marks_per_question}
-                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', i)}
+                                        value={addData?.questionList.find(q => q.que_id === `${qt_id?.question_type_id}-${i}`)?.marks_per_question}
+                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', `${qt_id?.question_type_id}-${i}`)}
                                         required={true}
                                     />
                                 </div>
@@ -198,6 +225,8 @@ const AddQuestion = () => {
                                         type="Text"
                                         name='question'
                                         required={true}
+                                        value={addData?.questionList.find(q => q.que_id === `${qt_id?.question_type_id}-${i}`)?.question}
+                                        onChange={(e) => addFelidValue(e.target.value, 'question', `${qt_id?.question_type_id}-${i}`)}
                                     />
                                 </div>
 
