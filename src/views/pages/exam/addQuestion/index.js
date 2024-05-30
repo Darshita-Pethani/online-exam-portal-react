@@ -125,33 +125,65 @@ const AddQuestion = () => {
 
     // delete feild
     const handleDeleteFelid = (i) => {
-        console.log("i >>",i);
+        console.log("i >>", i);
         const newTodo = [...options];
         // remove 1 item  selected position
         newTodo.splice(i, 1);
         setOptions(newTodo);
     };
 
-    const formDetails = [];
 
+    const addFelidValue = (value, name, i) => {
+        let updatedQuestions = [...addData.questionList];
+        updatedQuestions[i - 1] = {
+            ...updatedQuestions[i - 1],
+            [name]: value
+        };
+        addData.questionList[i - 1] = {
+            ...updatedQuestions[i - 1],
+            [name]: value
+        }
+        console.log('updatedQuestions: ', updatedQuestions);
+        // console.log("adddata >>", addData);
+        setAddData(addData);
+    }
+
+    console.log("adddata >>", addData);
+    const formDetails = [];
     const renderForm = () => {
+        addData.questionList = [];
         examQuestionTypeData?.forEach((qt_id) => {
             if (qt_id?.question_type_id === 1) {
                 for (let i = 1; i <= qt_id?.total_questions; i++) {
+                    addData?.questionList.push({
+                        "question": "",
+                        "marks_per_question": "",
+                        "ans": "",
+                        "options": [
+                            {
+                                "option_value": ""
+                            },
+                            {
+                                "option_value": ""
+                            }
+                        ]
+                    });
                     formDetails.push(
                         <div>
                             <h5>MCQ</h5>
-                            <div className='col-12 mb-3 fw-600'>
+                            <div className='col-12 mb-3 fw-600' id={`question-${i}`}>
                                 {/* mark */}
                                 <div className='d-flex align-items-baseline gap-3 justify-content-end'>
                                     <InputBox
                                         feedbackInvalid="Mark is required"
-                                        id="validationMark"
+                                        id={`ValidationMark-${i}`}
                                         label="Mark"
                                         placeholder="Mark"
                                         type="Text"
                                         name='marks_per_question'
                                         style={{ width: '70px' }}
+                                        value={addData?.questionList[i - 1]?.marks_per_question}
+                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', i)}
                                         required={true}
                                     />
                                 </div>
