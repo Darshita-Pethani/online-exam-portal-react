@@ -50,6 +50,8 @@ const AddQuestion = () => {
                     });
                 }
             } else {
+                
+                console.log('addData: ', addData);
                 let response = await addQuestion(addData);
                 if (response?.status === 200) {
                     showNotification({
@@ -105,17 +107,19 @@ const AddQuestion = () => {
     const getExamDataById = async (id) => {
         const response = await getExamDataByIdApi(id);
         if (response?.status === 200) {
-            const questionTypeData = response?.data?.data?.exam_questiontype_relations
-            setExamQuestionTypeData(questionTypeData);
-            let questionList = [];
-            questionTypeData?.map((q_id) => {
-                // MCQ Type Question
+            const questionType = response?.data?.data?.exam_questiontype_relations;
+            setExamQuestionTypeData(questionType);
+            let questionList = []
+            questionType?.map((q_id) => {
+
+                // MCQ
                 if (q_id?.question_type_id === 1) {
                     for (let i = 1; i <= q_id?.total_questions; i++) {
                         questionList.push({
                             "question": "",
                             "marks_per_question": "",
                             "ans": "",
+                            "question_type_id": `${q_id?.question_type_id}`,
                             "options": [
                                 {
                                     "option_value": ""
@@ -124,20 +128,22 @@ const AddQuestion = () => {
                                     "option_value": ""
                                 }
                             ]
-                        })
+                        });
                     }
-                } else {
-                    // Single Line Options
+                }
+                // Single Line Question
+                else {
                     for (let i = 1; i <= q_id?.total_questions; i++) {
                         questionList.push({
                             "question": "",
                             "marks_per_question": "",
-                            "ans": ""
-                        })
+                            "ans": "",
+                            "question_type_id": `${q_id?.question_type_id}`,
+                        });
                     }
                 }
-            });
-            setAddData({ ...addData, questionList: questionList });
+            })
+            setAddData({ ...addData, exam_id: questionType[0]?.exam_id, questionList: questionList })
         } else if (response?.status === 401) {
             navigate('/')
         }
@@ -150,241 +156,68 @@ const AddQuestion = () => {
         getQuestionType();
     }, []);
 
-    const [options, setOptions] = useState([]);
-    const handleAddFelid = () => {
-        setOptions([...options, { option_value: "" }]);
+    // add felid
+    const handleAddFelid = (que_i) => {
+        let que_List = [...addData?.questionList];
+        let add_felid = [...que_List[que_i]?.options];
+        let data = [...add_felid, { option_value: "" }]
+
+        // to set new question list with new options
+        que_List[que_i] = {
+            ...que_List[que_i],
+            options: data
+        }
+
+        setAddData({ ...addData, questionList: que_List });
     }
 
-    // delete feild
-    const handleDeleteFelid = (i) => {
-        console.log("i >>", i);
-        const newTodo = [...options];
+    // delete felid
+    const handleDeleteFelid = (op_i, que_i) => {
+        let que_List = [...addData?.questionList];
+        let remove_felid = [...que_List[que_i]?.options];
+
         // remove 1 item  selected position
-        newTodo.splice(i, 1);
-        setOptions(newTodo);
+        remove_felid.splice(op_i, 1);
+
+        // to set remove felid and new obj
+        que_List[que_i] = {
+            ...que_List[que_i],
+            options: remove_felid
+        }
+        setAddData({ ...addData, questionList: que_List });
     };
 
-
+    // add felid value
     const addFelidValue = (value, name, i) => {
-        console.log('value: ', value);
-        console.log('i: ', i);
         let updatedQuestions = [...addData?.questionList];
-
-        updatedQuestions[i - 1] = {
-            ...updatedQuestions[i - 1],
+        updatedQuestions[i] = {
+            ...updatedQuestions[i],
             [name]: value
         };
-
-        setAddData({
-            ...addData,
-            questionList: updatedQuestions
-        });
+        setAddData({ ...addData, questionList: updatedQuestions });
     }
 
-    const addOptionValue = (opValue, opName, opIndex) => {
-        console.log('opIndex: ', opIndex);
-        console.log('opValue: ', opValue);
-        console.log('opName: ', opName);
-        let updatedOption = [...addData?.questionList];
-        let updatedCopyOption = [...updatedOption[opIndex - 1]?.options]
-        console.log('updatedCopyOption: ', updatedCopyOption);
-        updatedCopyOption[i - 1] = {
-            ...updatedCopyOption[i - 1],
-            [opName]: opValue
+    // add option data in json
+    const addOptionValue = (opValue, opKeyName, que_i, opIndex) => {
+        let que_List = [...addData?.questionList];
+        let copyOption = [...que_List[que_i]?.options];
+
+        // to set the option value on selected option
+        copyOption[opIndex] = {
+            ...copyOption[opIndex],
+            [opKeyName]: opValue
         };
 
-        setAddData({
-            ...addData,
-            questionList: updatedQuestions
-        });
+        // to set the option array in selected question
+        que_List[que_i] = {
+            ...que_List[que_i],
+            options: copyOption
+        };
 
+        setAddData({ ...addData, questionList: que_List });
     }
 
-    console.log("adddata >>", addData);
-    const formDetails = [];
-    const renderForm = () => {
-        examQuestionTypeData?.forEach((qt_id) => {
-            if (qt_id?.question_type_id === 1) {
-                for (let i = 1; i <= qt_id?.total_questions; i++) {
-                    formDetails.push(
-                        <div>
-                            <h5>MCQ</h5>
-                            <div className='col-12 mb-3 fw-600' id={`question-${i}`}>
-                                {/* mark */}
-                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
-                                    <InputBox
-                                        feedbackInvalid="Mark is required"
-                                        id={`ValidationMark-${i}`}
-                                        label="Mark"
-                                        placeholder="Mark"
-                                        type="Text"
-                                        name='marks_per_question'
-                                        style={{ width: '70px' }}
-                                        value={addData?.questionList[i - 1]?.marks_per_question}
-                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', i)}
-                                        required={true}
-                                    />
-                                </div>
-
-                                {/* question */}
-                                <div>
-                                    <InputBox
-                                        feedbackInvalid="question is required"
-                                        id={`Question ${i}`}
-                                        label={`Question ${i}`}
-                                        placeholder={`Question ${i}`}
-                                        type="Text"
-                                        name='question'
-                                        value={addData?.questionList[i - 1]?.question}
-                                        onChange={(e) => addFelidValue(e.target.value, 'question', i)}
-                                        required={true}
-                                    />
-                                </div>
-
-                                {/* option  */}
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between gap-3'>
-                                        <div style={{ width: '100%' }}>
-                                            <InputBox
-                                                feedbackInvalid="option is required"
-                                                id="validationOption"
-                                                label=""
-                                                placeholder="Option"
-                                                type="Text"
-                                                name='option_value'
-                                                value={addData?.questionList[i - 1]?.options[0]?.option_value}
-                                                onChange={(e) => addOptionValue(e.target.value, 'option_value', i)}
-                                                required={true}
-                                            />
-                                        </div>
-                                        <div style={{ width: '100%' }}>
-                                            <InputBox
-                                                feedbackInvalid="option is required"
-                                                id="validationOption"
-                                                label=""
-                                                placeholder="Option"
-                                                type="Text"
-                                                name='option_value'
-                                                // value={addData?.questionList[i - 1]?.options?.option_value}
-                                                onChange={(e) => addOptionValue(e.target.value, 'option_value', i)}
-                                                required={true}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {
-                                        options?.length > 0 && options?.map((option, index) => (
-                                            <div className='d-flex align-items-center justify-content-between gap-3' key={index}>
-                                                <div style={{ width: '100%' }}>
-                                                    <InputBox
-                                                        feedbackInvalid="option is required"
-                                                        id="validationOption"
-                                                        label=""
-                                                        placeholder="Option"
-                                                        type="Text"
-                                                        name='option_value'
-                                                        // value={addData?.questionList[i - 1]?.options?.option_value}
-                                                        onChange={(e) => addOptionValue(e.target.value, 'option_value', i)}
-                                                        required={true}
-                                                    />
-                                                </div>
-                                                <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteFelid(index)} >
-                                                    <MdDelete />
-                                                </div>
-                                            </div>
-                                        ))
-                                    }
-
-                                    <div style={{ cursor: 'pointer', marginTop: '20px' }} onClick={handleAddFelid}>
-                                        <CgMathPlus />
-                                        <span>Add Felid</span>
-                                    </div>
-                                </div>
-
-                                {/* answer */}
-                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
-                                    <InputBox
-                                        feedbackInvalid="Answer is required"
-                                        id="validationAns"
-                                        label="Answer"
-                                        placeholder="Answer"
-                                        type="Text"
-                                        name='ans'
-                                        style={{ width: '200px', marginTop: '20px' }}
-                                        value={addData?.questionList[i - 1]?.ans}
-                                        onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
-                                        required={true}
-                                    />
-                                </div>
-
-                            </div>
-                            <hr />
-                        </div>
-                    );
-
-                }
-            } else {
-                for (let i = 1; i <= qt_id?.total_questions; i++) {
-                    formDetails.push(
-                        <div>
-                            <div className='col-12 mb-3 fw-600' id={`question-${i}`}>
-                                <h5>Single Line</h5>
-                                {/* mark */}
-                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
-                                    <InputBox
-                                        feedbackInvalid="Mark is required"
-                                        id="validationMark"
-                                        label="Mark"
-                                        placeholder="Mark"
-                                        type="Text"
-                                        name='marks_per_question'
-                                        style={{ width: '70px' }}
-                                        value={addData?.questionList[i - 1]?.marks_per_question}
-                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', i)}
-                                        required={true}
-                                    />
-                                </div>
-
-                                {/* question */}
-                                <div>
-                                    <InputBox
-                                        feedbackInvalid="question is required"
-                                        id="validationQuestion"
-                                        label={`Question ${i}`}
-                                        placeholder="Question"
-                                        type="Text"
-                                        name='question'
-                                        value={addData?.questionList[i - 1]?.question}
-                                        onChange={(e) => addFelidValue(e.target.value, 'question', i)}
-                                        required={true}
-                                    />
-                                </div>
-
-                                {/* answer */}
-                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
-                                    <InputBox
-                                        feedbackInvalid="Answer is required"
-                                        id="validationAns"
-                                        label="Answer"
-                                        placeholder="Answer"
-                                        type="Text"
-                                        name='marks_per_question'
-                                        style={{ width: '200px', marginTop: '20px' }}
-                                        value={addData?.questionList[i - 1]?.ans}
-                                        onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
-                                        required={true}
-                                    />
-                                </div>
-
-                            </div>
-                            <hr />
-                        </div>
-                    );
-                }
-            }
-        });
-        return formDetails;
-    };
+    // console.log("adddata >>", addData);
 
     return (
         <CRow className="justify-content-center">
@@ -403,7 +236,102 @@ const AddQuestion = () => {
                             onSubmit={handleSubmit}
                         >
                             <div className='row'>
-                                {renderForm()}
+                                {
+                                    addData?.questionList?.map((data, i) => (
+                                        <div>
+                                            {parseInt(data?.question_type_id) === 1 ? <h5>MCQ</h5> : <h5>Single Line</h5>}
+                                            <div className='col-12 mb-3 fw-600'>
+                                                {/* mark */}
+                                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
+                                                    <InputBox
+                                                        feedbackInvalid="Mark is required"
+                                                        id={`ValidationMark ${i}`}
+                                                        label="Mark"
+                                                        placeholder="Mark"
+                                                        type="Text"
+                                                        name='marks_per_question'
+                                                        style={{ width: '70px' }}
+                                                        value={addData?.questionList[i]?.marks_per_question}
+                                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', i)}
+                                                        required={true}
+                                                    />
+                                                </div>
+
+                                                {/* question */}
+                                                <div>
+                                                    <InputBox
+                                                        feedbackInvalid="question is required"
+                                                        id={`Question ${i}`}
+                                                        label={`Question ${i + 1}`}
+                                                        placeholder={`Question`}
+                                                        type="Text"
+                                                        name='question'
+                                                        required={true}
+                                                        value={addData?.questionList[i]?.question}
+                                                        onChange={(e) => addFelidValue(e.target.value, 'question', i)}
+                                                    />
+                                                </div>
+
+                                                {/* option  */}
+                                                <div>
+                                                    {
+                                                        addData?.questionList[i]?.options?.map((value, opIndex) => (
+                                                            <div style={{ width: '100%' }}>
+                                                                <div className={(addData?.questionList[i].options.length > 2 && opIndex > 1) ? 'd-flex gap-2 align-items-baseline' : ''}>
+                                                                    <InputBox
+                                                                        feedbackInvalid="option is required"
+                                                                        id="validationOption"
+                                                                        placeholder="Option"
+                                                                        type="Text"
+                                                                        name='option_value'
+                                                                        value={addData?.questionList[i]?.options[opIndex]?.option_value}
+                                                                        onChange={(e) => addOptionValue(e.target.value, 'option_value', i, opIndex)}
+                                                                        style={{ margin: '15px 0' }}
+                                                                        required={true}
+                                                                    />
+
+                                                                    {/* delete felid */}
+                                                                    {
+                                                                        (addData?.questionList[i].options.length > 2 && opIndex > 1) &&
+                                                                        <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteFelid(opIndex, i)} >
+                                                                            <MdDelete />
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                    {parseInt(data?.question_type_id) === 1 &&
+                                                        <div style={{ cursor: 'pointer', marginTop: '10px' }} onClick={() => handleAddFelid(i)}>
+                                                            <CgMathPlus />
+                                                            <span>Add Felid</span>
+                                                        </div>
+                                                    }
+
+                                                </div>
+
+                                                {/* answer */}
+                                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
+                                                    <InputBox
+                                                        feedbackInvalid="Answer is required"
+                                                        id="validationAns"
+                                                        label="Answer"
+                                                        placeholder="Answer"
+                                                        type="Text"
+                                                        name='ans'
+                                                        style={{ width: '200px', marginTop: '20px' }}
+                                                        value={addData?.questionList[i]?.ans}
+                                                        onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
+                                                        required={true}
+                                                    />
+                                                </div>
+
+                                            </div>
+                                            <hr />
+                                        </div>
+                                    ))
+                                }
+
                             </div>
 
                             <div className="d-flex gap-3 d justify-content-center align-items-center my-4">
