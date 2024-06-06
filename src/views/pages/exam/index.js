@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { CCardBody, CFormLabel } from '@coreui/react'
-import { Link, useNavigate } from 'react-router-dom'
+import { CButton, CCardBody, CFormLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CTooltip } from '@coreui/react'
+import { useNavigate } from 'react-router-dom'
 import TableContainer from '../../../components/TableContainer'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { statusData } from '../utils/helper'
@@ -13,6 +13,7 @@ import FormButton from '../../forms/formButton'
 import moment from 'moment'
 import { deleteExam, examDataApi } from '../../../api/exam'
 import { GrFormAdd } from "react-icons/gr";
+import { MdRemoveRedEye } from 'react-icons/md';
 
 
 const ExamList = () => {
@@ -39,6 +40,7 @@ const ExamList = () => {
             navigate("/");
         }
     }
+    const [visible, setVisible] = useState(false)
 
     const columns = useMemo(() => [
         {
@@ -153,9 +155,11 @@ const ExamList = () => {
             Cell: ({ row }) => (
                 <>
                     <div style={{ display: "flex", alignItems: "center", gap: '10px', justifyContent: 'center' }}>
-                        <div style={{ background: "rgb(88 86 214 / 8%)" }} className='editDeleteButton edit'
-                        >
-                            <CiEdit style={{ color: 'rgb(4 0 255)' }}
+                        <div style={{ background: row?.original?.questions?.length > 0 ? 'rgb(238 51 94 / 10%)' : "rgb(88 86 214 / 8%)", cursor: row?.original?.questions?.length > 0 ? 'not-allowed' : 'pointer' }} className='editDeleteButton edit'>
+                            <CiEdit
+                                style={{
+                                    color: row?.original?.questions?.length > 0 ? 'rgb(238,51,94)' : 'rgb(4 0 255)', pointerEvents: row?.original?.questions?.length > 0 ? 'none' : 'auto'
+                                }}
                                 onClick={() => getExamDataById(row?.original?.id)}
                             />
                         </div>
@@ -165,14 +169,35 @@ const ExamList = () => {
                                 onClick={() => (DeleteRecord(row?.original?.id, deleteExam, showNotification, setStatusUpdate))} />
                         </div>
 
-                        <div
-                            style={{ background: "rgb(88 86 214)", width: '100%', minWidth: '120px', padding: '5px 5px', borderRadius: '20px', fontWeight: '600', color: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                            onClick={() => (addQuestionPage(row?.original?.id))}
+                        {/* add/edit question */}
+                        {row?.original?.questions?.length > 0 ?
+                            // edit question
+                            <div style={{ background: "rgb(25 135 84)", width: '100%', minWidth: '120px', padding: '5px 5px', borderRadius: '20px', fontWeight: '600', color: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                onClick={() => (addQuestionPage(row?.original?.id, true))}
+                            >
+                                <CiEdit style={{ fontSize: '25px' }} />
+                                <CFormLabel style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}>Edit Question</CFormLabel>
+                            </div>
+                            :
+                            // add questions
+                            <div
+                                style={{ background: "#5856d6", width: '100%', minWidth: '120px', padding: '5px 5px', borderRadius: '20px', fontWeight: '600', color: '#f5f5f5', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                                onClick={() => (addQuestionPage(row?.original?.id))}
+                            >
+                                <GrFormAdd style={{ fontSize: '25px' }} />
+                                <CFormLabel style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}>Add Question</CFormLabel>
+                            </div>
+                        }
+                        <CTooltip
+                            content="View Paper"
+                            placement="top"
                         >
-                            <GrFormAdd style={{ fontSize: '25px' }} />
-                            <CFormLabel style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}>Add Question</CFormLabel>
-                        </div>
+                            <CButton
+                                color="light" style={{ padding: '4px 11px' }}
+                                onClick={() => setVisible(!visible)}
 
+                            ><MdRemoveRedEye style={{ marginBottom: '4px' }} /></CButton>
+                        </CTooltip>
                     </div>
                 </>
             ),
@@ -180,10 +205,11 @@ const ExamList = () => {
     ], []);
 
     // add question page
-    const addQuestionPage = (id) => {
+    const addQuestionPage = (id, data) => {
         navigate('/pages/exam/question/add', {
             state: {
-                exam_id: id
+                exam_id: id,
+                editData: data != undefined ? true : ''
             }
         });
     }
@@ -203,31 +229,133 @@ const ExamList = () => {
     }, [defaultFilter, statusUpdate]);
 
     return (
-        <CCardBody>
-            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                <FormButton
-                    style={{
-                        color: 'white', fontSize: '16px', fontWeight: '500', marginBottom: '24px',
-                        backgroundColor: 'var(--cui-primary)'
-                    }}
-                    hoverBgColor='#4846db'
-                    hoverFontColor='white'
-                    label='Add Exam'
-                    onClick={() => navigate('/pages/exam/add')}
-                />
-            </div>
+        <>
+            <CCardBody>
+                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <FormButton
+                        style={{
+                            color: 'white', fontSize: '16px', fontWeight: '500', marginBottom: '24px',
+                            backgroundColor: 'var(--cui-primary)'
+                        }}
+                        hoverBgColor='#4846db'
+                        hoverFontColor='white'
+                        label='Add Exam'
+                        onClick={() => navigate('/pages/exam/add')}
+                    />
+                </div>
 
-            <div style={{ marginBottom: '24px' }}>
-                <TableContainer
-                    title='Exam List'
-                    columns={columns}
-                    data={examList}
-                    defaultFilter={defaultFilter}
-                    setDefaultFilter={setDefaultFilter}
-                    rowCount={rowCount}
-                />
-            </div>
-        </CCardBody>
+                <div style={{ marginBottom: '24px' }}>
+                    <TableContainer
+                        title='Exam List'
+                        columns={columns}
+                        data={examList}
+                        defaultFilter={defaultFilter}
+                        setDefaultFilter={setDefaultFilter}
+                        rowCount={rowCount}
+                    />
+                </div>
+                {console.log('visible: ', visible)}
+
+            </CCardBody>
+
+            
+            <CModal
+                scrollable
+                visible={visible}
+                onClose={() => setVisible(false)}
+                aria-labelledby="ScrollingLongContentExampleLabel2"
+            >
+                <CModalHeader>
+                    <CModalTitle id="ScrollingLongContentExampleLabel2">Modal title</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                    <p>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
+                        vel augue laoreet rutrum faucibus dolor auctor.
+                    </p>
+                    <p>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+                        auctor fringilla.
+                    </p>
+                    <p>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
+                        vel augue laoreet rutrum faucibus dolor auctor.
+                    </p>
+                    <p>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+                        auctor fringilla.
+                    </p>
+                    <p>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
+                        vel augue laoreet rutrum faucibus dolor auctor.
+                    </p>
+                    <p>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+                        auctor fringilla.
+                    </p>
+                    <p>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
+                        vel augue laoreet rutrum faucibus dolor auctor.
+                    </p>
+                    <p>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+                        auctor fringilla.
+                    </p>
+                    <p>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
+                        vel augue laoreet rutrum faucibus dolor auctor.
+                    </p>
+                    <p>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+                        auctor fringilla.
+                    </p>
+                    <p>
+                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                    </p>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
+                        vel augue laoreet rutrum faucibus dolor auctor.
+                    </p>
+                    <p>
+                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
+                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
+                        auctor fringilla.
+                    </p>
+                </CModalBody>
+                <CModalFooter>
+                    <CButton color="secondary" onClick={() => setVisible(false)}>
+                        Close
+                    </CButton>
+                    <CButton color="primary">Save changes</CButton>
+                </CModalFooter>
+            </CModal>
+        </>
     )
 }
 

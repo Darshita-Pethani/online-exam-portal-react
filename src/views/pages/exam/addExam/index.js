@@ -476,7 +476,7 @@ const AddExam = () => {
                                 </div>
 
                                 {addData?.questionType?.map((questionData) => (
-                                    sumOfTotalQuestion += questionData.total_questions,
+                                    sumOfTotalQuestion += questionData?.total_questions,
                                     questionTypeData?.map((data) => (
                                         parseInt(questionData?.question_type_id) === data?.id &&
                                         <div className='col-12 col-md-6 mb-3 fw-600'>

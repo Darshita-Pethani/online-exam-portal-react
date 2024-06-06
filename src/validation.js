@@ -7,10 +7,10 @@ export const ValidationTag = (value) => {
         error.start_time = ""
     }
 
-    if (value?.date === "") {
+    if (value?.date === "" || value?.date_of_birth === "") {
         error.date = "Date is required"
     } else {
-        error.email = ""
+        error.date = ""
     }
 
     if (value?.end_time === "") {

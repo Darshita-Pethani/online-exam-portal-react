@@ -50,15 +50,15 @@ const AddUser = () => {
     const handleSubmit = async (event) => {
         let formData = new FormData();
         const form = event.currentTarget;
-
         event.preventDefault()
-        event.stopPropagation()
 
         if (form.checkValidity() === false) {
             // validateDateOfBirth();
-            setError(ValidationTag(addData));
             form.classList.add('was-validated');
             setValidated(true);
+            ValidationTag();
+            setError(ValidationTag(addData));
+            event.stopPropagation();
         } else {
             // validateDateOfBirth();
             // if (!validateDateOfBirth()) {
@@ -356,11 +356,12 @@ const AddUser = () => {
                                     <FormDatePicker
                                         value={addData?.date_of_birth}
                                         label="Date of Birth"
-                                        name='Date of Birth'
+                                        name='date_of_birth'
                                         setAddData={setAddData}
                                         setError={setError}
-                                        error={error}
+                                        error={error?.date}
                                         formKeyName='date_of_birth'
+                                        required={true}
                                     />
                                 </div>
 

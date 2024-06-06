@@ -30,7 +30,7 @@
 
 // set edit and delete buttons
 .editDeleteButton {
-    width: 100%;
+    // width: 100%;
     min-width: 30px;
     background: rgba(88, 86, 214, 0.08);
     height: 30px;
@@ -88,7 +88,56 @@
     }
 }
 
-.modal-dialog {
-    width: 300px !important;
-    height: 300px !important;
+.img-model {
+    .modal-dialog {
+        width: 300px !important;
+        height: 300px !important;
+    }
+}
+
+// mcq questions design
+.mcq_question {
+    .options {
+        &>div {
+            // min-Width: 48%
+            width: 48%;
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .mcq_question {
+        .options {
+            gap: 0 !important;
+
+            &>div {
+                width: 100%;
+            }
+        }
+    }
+}
+
+.question_card {
+    .que_label_parent {
+        display: flex;
+        gap: 20px;
+        padding: 0;
+
+        .question_label {
+            min-width: 35%;
+            margin-bottom: 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+    }
+
+}
+
+@media only screen and (max-width: 576px) {
+    .question_card {
+        .que_label_parent {
+            display: unset;
+        }
+
+    }
 }

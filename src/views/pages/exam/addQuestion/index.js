@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import { CCard, CCardBody, CCol, CForm, CFormLabel, CRow } from '@coreui/react'
+import { CCard, CCardBody, CCol, CForm, CFormCheck, CFormLabel, CInputGroup, CInputGroupText, CRow } from '@coreui/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { allDispatch } from '../../../../allDispatch'
 import { InputBox } from '../../../forms/inputBox'
-import { statusData } from '../../utils/helper'
-import SelectBox from '../../../forms/selectOption'
 import FormButton from '../../../forms/formButton'
 import { addQuestion, updateQuestionDataApi } from '../../../../api/question'
 import { getExamDataByIdApi } from '../../../../api/exam'
 import { MdDelete } from "react-icons/md";
 import { CgMathPlus } from "react-icons/cg";
 import { questionTypeDataApi } from '../../../../api/questionType'
+import { CgAsterisk } from "react-icons/cg";
+import Instruction from './queInstruction'
 
 const AddQuestion = () => {
     const { showNotification } = allDispatch();
@@ -22,6 +22,8 @@ const AddQuestion = () => {
         exam_id: '',
         questionList: []
     });
+    const [examTotalMarks, setExamTotalMarks] = useState('');
+    let marks_total = 0;
 
     const handleSubmit = async (event) => {
         const form = event.currentTarget
@@ -30,42 +32,60 @@ const AddQuestion = () => {
             event.stopPropagation()
         } else {
             event.preventDefault();
-            if (location?.state?.editData) {
-                let response = await updateQuestionDataApi(addData);
-                if (response.status === 200) {
-                    showNotification({
-                        title: "Success",
-                        message: response?.data?.message,
-                        status: 'success',
-                        isOpen: true
-                    });
-                    setValidated(true);
-                    navigate("/pages/exam/list");
+            if (location?.state?.editData === true) {
+                if (marks_total === examTotalMarks) {
+                    let response = await updateQuestionDataApi(addData);
+                    if (response?.status === 200) {
+                        showNotification({
+                            title: "Success",
+                            message: response?.data?.message,
+                            status: 'success',
+                            isOpen: true
+                        });
+                        setValidated(true);
+                        navigate("/pages/exam/list");
+                    } else {
+                        showNotification({
+                            title: "Error",
+                            message: response?.data?.message,
+                            status: 'danger',
+                            isOpen: true
+                        });
+                    }
                 } else {
+                    console.log(" message: 'Marks are not matched to total marks of exam' ");
                     showNotification({
                         title: "Error",
-                        message: response?.data?.message,
+                        message: 'Marks are not matched to total marks of exam',
                         status: 'danger',
                         isOpen: true
                     });
                 }
             } else {
-                
-                console.log('addData: ', addData);
-                let response = await addQuestion(addData);
-                if (response?.status === 200) {
-                    showNotification({
-                        title: "Success",
-                        message: response?.data?.message,
-                        status: 'success',
-                        isOpen: true
-                    });
-                    setValidated(true);
-                    navigate("/pages/exam/list");
+                if (marks_total === examTotalMarks) {
+                    let response = await addQuestion(addData);
+                    if (response?.status === 200) {
+                        showNotification({
+                            title: "Success",
+                            message: response?.data?.message,
+                            status: 'success',
+                            isOpen: true
+                        });
+                        navigate("/pages/exam/list");
+                        setValidated(true);
+                    } else {
+                        showNotification({
+                            title: "Error",
+                            message: response?.data?.message,
+                            status: 'danger',
+                            isOpen: true
+                        });
+                    }
                 } else {
+                    console.log(" message: 'Marks are not matched to total marks of exam' ");
                     showNotification({
                         title: "Error",
-                        message: response?.data?.message,
+                        message: 'Marks are not matched to total marks of exam',
                         status: 'danger',
                         isOpen: true
                     });
@@ -103,22 +123,27 @@ const AddQuestion = () => {
     }
 
     // get exam data by id
-    const [examQuestionTypeData, setExamQuestionTypeData] = useState([]);
+    const [examData, setExamData] = useState([]);
     const getExamDataById = async (id) => {
         const response = await getExamDataByIdApi(id);
+        setExamTotalMarks(response?.data?.data?.total_marks);
         if (response?.status === 200) {
             const questionType = response?.data?.data?.exam_questiontype_relations;
-            setExamQuestionTypeData(questionType);
+            setExamData(response?.data?.data);
+
+            // set data to store ans
             let questionList = []
             questionType?.map((q_id) => {
-
+                let questionComanData = {
+                    "question": "",
+                    "marks": "",
+                    "ans": "",
+                }
                 // MCQ
                 if (q_id?.question_type_id === 1) {
                     for (let i = 1; i <= q_id?.total_questions; i++) {
                         questionList.push({
-                            "question": "",
-                            "marks_per_question": "",
-                            "ans": "",
+                            ...questionComanData,
                             "question_type_id": `${q_id?.question_type_id}`,
                             "options": [
                                 {
@@ -135,28 +160,44 @@ const AddQuestion = () => {
                 else {
                     for (let i = 1; i <= q_id?.total_questions; i++) {
                         questionList.push({
-                            "question": "",
-                            "marks_per_question": "",
-                            "ans": "",
+                            ...questionComanData,
                             "question_type_id": `${q_id?.question_type_id}`,
                         });
                     }
                 }
-            })
-            setAddData({ ...addData, exam_id: questionType[0]?.exam_id, questionList: questionList })
+            });
+
+            // edit question records
+            if (response?.data?.data?.questions?.length > 0) {
+                questionList = [],
+                    response?.data?.data?.questions?.map((data) => {
+                        if (data?.options?.length > 0) {
+                            questionList.push({
+                                ...data,
+                                "question_type_id": 1,
+                            })
+                        } else {
+                            questionList.push({
+                                ...data,
+                                "question_type_id": 2,
+                            })
+                        }
+                    })
+            }
+            setAddData({ ...addData, exam_id: questionType[0]?.exam_id, questionList: questionList });
         } else if (response?.status === 401) {
             navigate('/')
         }
     }
 
     useEffect(() => {
-        if (location?.state?.exam_id) {
+        if (location?.state?.exam_id || location?.state?.editData === true) {
             getExamDataById(location?.state?.exam_id);
         }
         getQuestionType();
     }, []);
 
-    // add felid
+    // add option felid
     const handleAddFelid = (que_i) => {
         let que_List = [...addData?.questionList];
         let add_felid = [...que_List[que_i]?.options];
@@ -165,13 +206,14 @@ const AddQuestion = () => {
         // to set new question list with new options
         que_List[que_i] = {
             ...que_List[que_i],
+            ans: '',
             options: data
         }
 
         setAddData({ ...addData, questionList: que_List });
     }
 
-    // delete felid
+    // delete option felid
     const handleDeleteFelid = (op_i, que_i) => {
         let que_List = [...addData?.questionList];
         let remove_felid = [...que_List[que_i]?.options];
@@ -182,13 +224,14 @@ const AddQuestion = () => {
         // to set remove felid and new obj
         que_List[que_i] = {
             ...que_List[que_i],
+            ans: '',
             options: remove_felid
         }
         setAddData({ ...addData, questionList: que_List });
     };
 
     // add felid value
-    const addFelidValue = (value, name, i) => {
+    const addFelidValue = (value, name, i, opIndex) => {
         let updatedQuestions = [...addData?.questionList];
         updatedQuestions[i] = {
             ...updatedQuestions[i],
@@ -211,14 +254,30 @@ const AddQuestion = () => {
         // to set the option array in selected question
         que_List[que_i] = {
             ...que_List[que_i],
+            // if any changes in option array then ans felid is null  
+            ans: '',
             options: copyOption
         };
 
         setAddData({ ...addData, questionList: que_List });
     }
 
-    // console.log("adddata >>", addData);
+    // console.log("addData >>", addData);
+    // exam not editable when we add questions 
+    // display all details of exams in question form 
+    // question not editable 
+    // sort order of option after create exam in view exam form 
+    // check option with correct ans after add  question form not editable  question form only option can sort order
 
+    // set checked value to ans felid
+    const addCheckedValue = (value, name, index) => {
+        let que_List = [...addData?.questionList];
+        que_List[index] = {
+            ...que_List[index],
+            [name]: value
+        };
+        setAddData({ ...addData, questionList: que_List });
+    }
     return (
         <CRow className="justify-content-center">
             <CCol lg={10}>
@@ -236,105 +295,136 @@ const AddQuestion = () => {
                             onSubmit={handleSubmit}
                         >
                             <div className='row'>
+                                <Instruction examData={examData} />
+
                                 {
                                     addData?.questionList?.map((data, i) => (
-                                        <div>
-                                            {parseInt(data?.question_type_id) === 1 ? <h5>MCQ</h5> : <h5>Single Line</h5>}
-                                            <div className='col-12 mb-3 fw-600'>
+                                        // for count calculation of total marks
+                                        marks_total += parseInt(data?.marks),
+                                        <div style={{ boxShadow: 'rgba(0, 0, 0, 0.05) 0px 0px 0px 1px', padding: '20px', borderRadius: '5px', background: 'rgb(88 86 214 / 3%)' }} className='mb-4'>
+                                            <div className='col-12 fw-600'>
                                                 {/* mark */}
-                                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
-                                                    <InputBox
-                                                        feedbackInvalid="Mark is required"
-                                                        id={`ValidationMark ${i}`}
-                                                        label="Mark"
-                                                        placeholder="Mark"
-                                                        type="Text"
-                                                        name='marks_per_question'
-                                                        style={{ width: '70px' }}
-                                                        value={addData?.questionList[i]?.marks_per_question}
-                                                        onChange={(e) => addFelidValue(e.target.value, 'marks_per_question', i)}
-                                                        required={true}
-                                                    />
+                                                <div className='d-flex flex-wrap flex-row align-items-baseline gap-3 justify-content-between mb-3'>
+                                                    {parseInt(data?.question_type_id) === 1 ? <h6>Multiple Choice (MCQ)</h6> : <h6>Short Answer</h6>}
+                                                    <div className='d-flex flex-column'>
+                                                        <InputBox
+                                                            feedbackInvalid="Marks is required"
+                                                            id={`ValidationMark ${i}`}
+                                                            // label="Mark"
+                                                            placeholder="Mark"
+                                                            type="Text"
+                                                            name='marks'
+                                                            style={{ width: '70px' }}
+                                                            value={addData?.questionList[i]?.marks}
+                                                            onChange={(e) => addFelidValue(e.target.value, 'marks', i)}
+                                                            required={true}
+                                                        />
+                                                    </div>
                                                 </div>
 
                                                 {/* question */}
                                                 <div>
                                                     <InputBox
-                                                        feedbackInvalid="question is required"
+                                                        feedbackInvalid="Question is required"
                                                         id={`Question ${i}`}
-                                                        label={`Question ${i + 1}`}
+                                                        label={`Que-${i + 1}`}
                                                         placeholder={`Question`}
                                                         type="Text"
                                                         name='question'
                                                         required={true}
+                                                        style={{ background: '#5856d61c', marginTop: '5px' }}
                                                         value={addData?.questionList[i]?.question}
                                                         onChange={(e) => addFelidValue(e.target.value, 'question', i)}
                                                     />
                                                 </div>
 
                                                 {/* option  */}
-                                                <div>
+                                                <div className='row mcq_question'>
                                                     {
-                                                        addData?.questionList[i]?.options?.map((value, opIndex) => (
-                                                            <div style={{ width: '100%' }}>
-                                                                <div className={(addData?.questionList[i].options.length > 2 && opIndex > 1) ? 'd-flex gap-2 align-items-baseline' : ''}>
-                                                                    <InputBox
-                                                                        feedbackInvalid="option is required"
-                                                                        id="validationOption"
-                                                                        placeholder="Option"
-                                                                        type="Text"
-                                                                        name='option_value'
-                                                                        value={addData?.questionList[i]?.options[opIndex]?.option_value}
-                                                                        onChange={(e) => addOptionValue(e.target.value, 'option_value', i, opIndex)}
-                                                                        style={{ margin: '15px 0' }}
-                                                                        required={true}
-                                                                    />
-
-                                                                    {/* delete felid */}
-                                                                    {
-                                                                        (addData?.questionList[i].options.length > 2 && opIndex > 1) &&
-                                                                        <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteFelid(opIndex, i)} >
-                                                                            <MdDelete />
-                                                                        </div>
-                                                                    }
-                                                                </div>
-                                                            </div>
-                                                        ))
+                                                        addData?.questionList[i]?.options?.length > 0 &&
+                                                        <><CFormLabel style={{ marginTop: '18px', marginBottom: '0', color: '#db5d5d', fontSize: '14px' }}><CgAsterisk /> Mark the correct option</CFormLabel></>
                                                     }
+                                                    <div className='d-flex flex-wrap justify-content-between options'>
+                                                        {
+                                                            addData?.questionList[i]?.options?.map((value, opIndex) => (
+                                                                <div className={(addData?.questionList[i].options?.length > 2 && opIndex > 1) ? 'd-flex gap-2 align-items-baseline justify-content-between' : ''}>
+                                                                    {/* radio btn with input box */}
+                                                                    <CInputGroup style={{ marginTop: '20px' }}>
+                                                                        <CInputGroupText>
+                                                                            <CFormCheck type="checkbox"
+                                                                                value={addData?.questionList[i]?.options[opIndex]?.option_value}
+                                                                                onChange={(e) => addCheckedValue(e.target.value, 'ans', i)}
+                                                                                checked={addData?.questionList[i]?.ans === '' ? ''
+                                                                                    :
+                                                                                    addData?.questionList[i]?.options[opIndex]?.option_value === addData?.questionList[i]?.ans
+                                                                                }
+                                                                                id={`validationFormCheck${addData?.questionList[i]?.options[opIndex]}`}
+                                                                                required={addData?.questionList[i]?.ans === '' ? true : false}
+                                                                            />
+
+                                                                        </CInputGroupText>
+                                                                        <InputBox
+                                                                            feedbackInvalid="Option is required"
+                                                                            id="validationOption"
+                                                                            placeholder="Option"
+                                                                            type="Text"
+                                                                            name='option_value'
+                                                                            value={addData?.questionList[i]?.options[opIndex]?.option_value}
+                                                                            onChange={(e) => addOptionValue(e.target.value, 'option_value', i, opIndex)}
+                                                                            required={true}
+                                                                        />
+                                                                    </CInputGroup>
+                                                                    {/* delete felid */}
+                                                                    <div>
+                                                                        {
+                                                                            (addData?.questionList[i].options.length > 2 && opIndex > 1) &&
+                                                                            <div style={{ cursor: 'pointer' }} onClick={() => handleDeleteFelid(opIndex, i)} >
+                                                                                <MdDelete />
+                                                                            </div>
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
                                                     {parseInt(data?.question_type_id) === 1 &&
-                                                        <div style={{ cursor: 'pointer', marginTop: '10px' }} onClick={() => handleAddFelid(i)}>
-                                                            <CgMathPlus />
-                                                            <span>Add Felid</span>
+                                                        <div className='d-flex align-items-center justify-content-end'>
+                                                            <div style={{ cursor: 'pointer', marginTop: '13px', fontWeight: '600', color: '#5856d6' }} onClick={() => handleAddFelid(i)}>
+                                                                <CgMathPlus />
+                                                                <span style={{ marginLeft: '5px' }}>Add options</span>
+                                                            </div>
                                                         </div>
                                                     }
-
                                                 </div>
 
                                                 {/* answer */}
-                                                <div className='d-flex align-items-baseline gap-3 justify-content-end'>
-                                                    <InputBox
-                                                        feedbackInvalid="Answer is required"
-                                                        id="validationAns"
-                                                        label="Answer"
-                                                        placeholder="Answer"
-                                                        type="Text"
-                                                        name='ans'
-                                                        style={{ width: '200px', marginTop: '20px' }}
-                                                        value={addData?.questionList[i]?.ans}
-                                                        onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
-                                                        required={true}
-                                                    />
+                                                <div className='d-flex justify-content-end'>
+                                                    <div className='d-flex align-items-baseline flex-column justify-content-end'>
+                                                        <InputBox
+                                                            feedbackInvalid="Answer is required"
+                                                            id="validationAns"
+                                                            label=""
+                                                            placeholder="Answer"
+                                                            type="Text"
+                                                            name='ans'
+                                                            style={{ width: '200px', marginTop: '13px' }}
+                                                            value={addData?.questionList[i]?.ans}
+                                                            onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
+                                                            required={true}
+                                                            // readOnly={true}
+                                                            disabled={addData?.questionList[i]?.options?.length > 0 ? true : false}
+                                                        />
+                                                    </div>
                                                 </div>
 
                                             </div>
-                                            <hr />
                                         </div>
                                     ))
                                 }
-
                             </div>
 
-                            <div className="d-flex gap-3 d justify-content-center align-items-center my-4">
+                            {/* forms buttons */}
+                            <div className="d-flex gap-3 d justify-content-center align-items-center mb-4">
                                 <Link to={'/pages/exam/list'}>
                                     <FormButton
                                         style={{
@@ -364,7 +454,6 @@ const AddQuestion = () => {
                 </CCard>
             </CCol>
         </CRow >
-
     )
 
 }
