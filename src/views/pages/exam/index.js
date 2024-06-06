@@ -11,10 +11,12 @@ import { MdDelete } from "react-icons/md";
 import { DeleteRecord } from '../../../components/deleteRecord'
 import FormButton from '../../forms/formButton'
 import moment from 'moment'
-import { deleteExam, examDataApi } from '../../../api/exam'
+import { deleteExam, examDataApi, getExamDataByIdApi } from '../../../api/exam'
 import { GrFormAdd } from "react-icons/gr";
 import { MdRemoveRedEye } from 'react-icons/md';
-
+import ViewPaper from './viewPaper'
+import { useDispatch, useSelector } from 'react-redux'
+import { SET_VIEW_PAPER } from "../../../action";
 
 const ExamList = () => {
     const navigate = useNavigate();
@@ -24,6 +26,9 @@ const ExamList = () => {
     const [rowCount, setRowCount] = useState(0);
     const [statusUpdate, setStatusUpdate] = useState(false);
 
+    const dispatch = useDispatch();
+    const paperPopup = useSelector((state) => state?.paperPopup);
+
     const [defaultFilter, setDefaultFilter] = useState({
         "currentPage": 1,
         "itemsPerPage": 5,
@@ -31,8 +36,8 @@ const ExamList = () => {
         "filters": []
     });
 
-    const examsData = async () => {
-        const response = await examDataApi(defaultFilter);
+    const examsData = async (filterValue) => {
+        const response = await examDataApi(filterValue ?? defaultFilter);
         if (response?.status === 200) {
             setExamList(response?.data?.data?.rows);
             setRowCount(response?.data?.data?.count);
@@ -40,7 +45,6 @@ const ExamList = () => {
             navigate("/");
         }
     }
-    const [visible, setVisible] = useState(false)
 
     const columns = useMemo(() => [
         {
@@ -194,7 +198,7 @@ const ExamList = () => {
                         >
                             <CButton
                                 color="light" style={{ padding: '4px 11px' }}
-                                onClick={() => setVisible(!visible)}
+                                onClick={() => viewPaper(row?.original?.id)}
 
                             ><MdRemoveRedEye style={{ marginBottom: '4px' }} /></CButton>
                         </CTooltip>
@@ -223,11 +227,20 @@ const ExamList = () => {
             }
         });
     }
+    
+    // view paper
+    const [questionData, setQuestionData] = useState([])
+    const viewPaper = async (id) => {
+        const response = await getExamDataByIdApi(id);
+        if (response?.status === 200) {
+            setQuestionData(response?.data?.data?.questions)
+        }
+        dispatch({ type: SET_VIEW_PAPER, paperPopup: true });
+    }
 
     useEffect(() => {
         examsData(defaultFilter);
     }, [defaultFilter, statusUpdate]);
-
     return (
         <>
             <CCardBody>
@@ -254,107 +267,9 @@ const ExamList = () => {
                         rowCount={rowCount}
                     />
                 </div>
-                {console.log('visible: ', visible)}
-
             </CCardBody>
 
-            
-            <CModal
-                scrollable
-                visible={visible}
-                onClose={() => setVisible(false)}
-                aria-labelledby="ScrollingLongContentExampleLabel2"
-            >
-                <CModalHeader>
-                    <CModalTitle id="ScrollingLongContentExampleLabel2">Modal title</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-                        vel augue laoreet rutrum faucibus dolor auctor.
-                    </p>
-                    <p>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
-                    </p>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-                        vel augue laoreet rutrum faucibus dolor auctor.
-                    </p>
-                    <p>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
-                    </p>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-                        vel augue laoreet rutrum faucibus dolor auctor.
-                    </p>
-                    <p>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
-                    </p>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-                        vel augue laoreet rutrum faucibus dolor auctor.
-                    </p>
-                    <p>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
-                    </p>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-                        vel augue laoreet rutrum faucibus dolor auctor.
-                    </p>
-                    <p>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
-                    </p>
-                    <p>
-                        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-                        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-                    </p>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus
-                        vel augue laoreet rutrum faucibus dolor auctor.
-                    </p>
-                    <p>
-                        Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel
-                        scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus
-                        auctor fringilla.
-                    </p>
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => setVisible(false)}>
-                        Close
-                    </CButton>
-                    <CButton color="primary">Save changes</CButton>
-                </CModalFooter>
-            </CModal>
+            {paperPopup && <ViewPaper data={questionData} />}
         </>
     )
 }

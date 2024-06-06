@@ -15,6 +15,7 @@ export const initialState = {
         status: '',
         isOpen: false
     },
+    paperPopup: false
 }
 
 const changeState = (state = initialState, action) => {
@@ -29,7 +30,12 @@ const changeState = (state = initialState, action) => {
                 ...state,
                 snackbar: action.payload
             };
-
+        // show view paper in exam list
+        case actionTypes.SET_VIEW_PAPER:
+            return {
+                ...state,
+                paperPopup: action.paperPopup
+            };
         // user reducer
         case actionTypes.SET_USER_LOGIN_TOKEN:
             localStorage.setItem('authorization', action.payload);
