@@ -7,6 +7,16 @@ const ViewPaper = (props) => {
     const dispatch = useDispatch();
     const paperPopup = useSelector((state) => state?.paperPopup);
 
+    const onDragEnd =  (result) => {
+        console.log('ok: ', result);
+        if (!result.destination) {
+            return;
+        }
+    }
+    // aakhi navi banavani sort order thi 
+    // source che eni current index che and destination thi navi index malse
+    // uper paper ne min and hour ma add karvani che
+    // sort the questions also
     return (
         <>
             <CModal
@@ -18,6 +28,7 @@ const ViewPaper = (props) => {
                 <CModalHeader>
                     <CModalTitle id="ScrollingLongContentExampleLabel2">Question</CModalTitle>
                 </CModalHeader>
+                
                 <CModalBody>
                     <div className="container" style={{ padding: '12px' }}>
                         {props?.data?.map((que_data, index) => (
@@ -32,19 +43,15 @@ const ViewPaper = (props) => {
                                     borderRadius: '8px'
                                 }}
                             >
-                                <DragDropContext>
+
+                                <DragDropContext onDragEnd={onDragEnd}>
                                     <div>
                                         <div className="mb-3">
                                             <div className="d-flex align-items-center">
                                                 <CFormLabel className="form-label me-3" style={{ fontWeight: '600' }}>
                                                     Que-{index + 1}
                                                 </CFormLabel>
-                                                <CFormLabel className="ms-auto" style={{
-                                                    fontWeight: '500',
-                                                    padding: '4px 8px',
-                                                    borderRadius: '5px',
-                                                    background: '#f1f1f1'
-                                                }}>
+                                                <CFormLabel className="ms-auto" style={{ fontWeight: '500', padding: '4px 8px', borderRadius: '5px', background: '#f1f1f1' }}>
                                                     Mark: {que_data?.marks}
                                                 </CFormLabel>
                                             </div>
@@ -70,7 +77,11 @@ const ViewPaper = (props) => {
                                                         className="ms-4"
                                                     >
                                                         {que_data?.options?.map((option_data, opt_index) => (
-                                                            <Draggable key={opt_index} draggableId={`draggable-${index}-${opt_index}`} index={opt_index}>
+                                                            <Draggable
+                                                                key={opt_index}
+                                                                draggableId={`draggable-${index}-${opt_index}`}
+                                                                index={opt_index}
+                                                            >
                                                                 {(provided) => (
                                                                     <div
                                                                         ref={provided.innerRef}

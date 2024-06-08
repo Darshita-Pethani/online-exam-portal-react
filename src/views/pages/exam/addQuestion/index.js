@@ -11,6 +11,7 @@ import { CgMathPlus } from "react-icons/cg";
 import { questionTypeDataApi } from '../../../../api/questionType'
 import { CgAsterisk } from "react-icons/cg";
 import Instruction from './queInstruction'
+import Swal from 'sweetalert2'
 
 const AddQuestion = () => {
     const { showNotification } = allDispatch();
@@ -23,8 +24,17 @@ const AddQuestion = () => {
         questionList: []
     });
     const [examTotalMarks, setExamTotalMarks] = useState('');
+    const [examData, setExamData] = useState([]);
+
     let marks_total = 0;
 
+    const htmlContent = `
+    <p><b>Exam Name:</b> ${examData?.exam_type?.name}</p>
+    <p><b>Exam Date:</b> ${examData?.date}</p>
+    <p><b>Subject:</b> ${examData?.subject?.name}</p>
+    <p><b>Total Question:</b> ${examData?.total_questions}</p>
+    <p><strong>Do you want to save the changes?<strong></p>
+`;
     const handleSubmit = async (event) => {
         const form = event.currentTarget
         if (form.checkValidity() === false) {
@@ -34,24 +44,37 @@ const AddQuestion = () => {
             event.preventDefault();
             if (location?.state?.editData === true) {
                 if (marks_total === examTotalMarks) {
-                    let response = await updateQuestionDataApi(addData);
-                    if (response?.status === 200) {
-                        showNotification({
-                            title: "Success",
-                            message: response?.data?.message,
-                            status: 'success',
-                            isOpen: true
-                        });
-                        setValidated(true);
-                        navigate("/pages/exam/list");
-                    } else {
-                        showNotification({
-                            title: "Error",
-                            message: response?.data?.message,
-                            status: 'danger',
-                            isOpen: true
-                        });
-                    }
+                    Swal.fire({
+                        title: "Are you sure?",
+                        html: htmlContent,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, saved it!"
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            let response = await updateQuestionDataApi(addData);
+                            if (response?.status === 200) {
+                                showNotification({
+                                    title: "Success",
+                                    message: response?.data?.message,
+                                    status: 'success',
+                                    isOpen: true
+                                });
+                                setValidated(true);
+                                navigate("/pages/exam/list");
+                            } else {
+                                showNotification({
+                                    title: "Error",
+                                    message: response?.data?.message,
+                                    status: 'danger',
+                                    isOpen: true
+                                });
+                            }
+                        }
+                    });
+
                 } else {
                     console.log(" message: 'Marks are not matched to total marks of exam' ");
                     showNotification({
@@ -63,24 +86,35 @@ const AddQuestion = () => {
                 }
             } else {
                 if (marks_total === examTotalMarks) {
-                    let response = await addQuestion(addData);
-                    if (response?.status === 200) {
-                        showNotification({
-                            title: "Success",
-                            message: response?.data?.message,
-                            status: 'success',
-                            isOpen: true
-                        });
-                        navigate("/pages/exam/list");
-                        setValidated(true);
-                    } else {
-                        showNotification({
-                            title: "Error",
-                            message: response?.data?.message,
-                            status: 'danger',
-                            isOpen: true
-                        });
-                    }
+                    Swal.fire({
+                        title: "Are you sure?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes, saved it!"
+                    }).then(async (result) => {
+                        if (result.isConfirmed) {
+                            let response = await addQuestion(addData);
+                            if (response?.status === 200) {
+                                showNotification({
+                                    title: "Success",
+                                    message: response?.data?.message,
+                                    status: 'success',
+                                    isOpen: true
+                                });
+                                navigate("/pages/exam/list");
+                                setValidated(true);
+                            } else {
+                                showNotification({
+                                    title: "Error",
+                                    message: response?.data?.message,
+                                    status: 'danger',
+                                    isOpen: true
+                                });
+                            }
+                        }
+                    });
                 } else {
                     console.log(" message: 'Marks are not matched to total marks of exam' ");
                     showNotification({
@@ -123,7 +157,6 @@ const AddQuestion = () => {
     }
 
     // get exam data by id
-    const [examData, setExamData] = useState([]);
     const getExamDataById = async (id) => {
         const response = await getExamDataByIdApi(id);
         setExamTotalMarks(response?.data?.data?.total_marks);
@@ -398,25 +431,22 @@ const AddQuestion = () => {
                                                 </div>
 
                                                 {/* answer */}
-                                                <div className='d-flex justify-content-end'>
-                                                    <div className='d-flex align-items-baseline flex-column justify-content-end'>
-                                                        <InputBox
-                                                            feedbackInvalid="Answer is required"
-                                                            id="validationAns"
-                                                            label=""
-                                                            placeholder="Answer"
-                                                            type="Text"
-                                                            name='ans'
-                                                            style={{ width: '200px', marginTop: '13px' }}
-                                                            value={addData?.questionList[i]?.ans}
-                                                            onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
-                                                            required={true}
-                                                            // readOnly={true}
-                                                            disabled={addData?.questionList[i]?.options?.length > 0 ? true : false}
-                                                        />
-                                                    </div>
+                                                <div className={`${addData?.questionList[i]?.options?.length > 0 ? '' : 'mt-4'} `}>
+                                                    <InputBox
+                                                        feedbackInvalid="Answer is required"
+                                                        id="validationAns"
+                                                        label="Answer"
+                                                        placeholder="Answer"
+                                                        type="Text"
+                                                        name='ans'
+                                                        style={{ width: '200px' }}
+                                                        value={addData?.questionList[i]?.ans}
+                                                        onChange={(e) => addFelidValue(e.target.value, 'ans', i)}
+                                                        required={true}
+                                                        // readOnly={true}
+                                                        disabled={addData?.questionList[i]?.options?.length > 0 ? true : false}
+                                                    />
                                                 </div>
-
                                             </div>
                                         </div>
                                     ))
