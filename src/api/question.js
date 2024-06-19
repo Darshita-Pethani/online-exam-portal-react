@@ -50,3 +50,13 @@ export async function updateQuestionDataApi(data) {
         throw error;
     }
 }
+
+// update question sort order
+export async function updateOptionSortOrder(data) {
+    try {
+        const response = await callPutApi({ url: "question/sort/update", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

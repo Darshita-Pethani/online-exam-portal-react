@@ -227,14 +227,11 @@ const ExamList = () => {
             }
         });
     }
-    
+
     // view paper
-    const [questionData, setQuestionData] = useState([])
+    const [questionId, setQuestionId] = useState([])
     const viewPaper = async (id) => {
-        const response = await getExamDataByIdApi(id);
-        if (response?.status === 200) {
-            setQuestionData(response?.data?.data?.questions)
-        }
+        setQuestionId(id)
         dispatch({ type: SET_VIEW_PAPER, paperPopup: true });
     }
 
@@ -269,7 +266,7 @@ const ExamList = () => {
                 </div>
             </CCardBody>
 
-            {paperPopup && <ViewPaper data={questionData} />}
+            {paperPopup && <ViewPaper data={questionId} />}
         </>
     )
 }

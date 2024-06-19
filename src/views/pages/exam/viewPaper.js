@@ -2,21 +2,41 @@ import { CButton, CCard, CFormCheck, CFormLabel, CModal, CModalBody, CModalFoote
 import { useDispatch, useSelector } from "react-redux";
 import { SET_VIEW_PAPER } from "../../../action";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { updateOptionSortOrder } from "../../../api/question";
+import { getExamDataByIdApi } from "../../../api/exam";
+import { useEffect, useState } from "react";
 
 const ViewPaper = (props) => {
+    const [data, setData] = useState([]);
+
     const dispatch = useDispatch();
     const paperPopup = useSelector((state) => state?.paperPopup);
 
-    const onDragEnd =  (result) => {
-        console.log('ok: ', result);
+    const getExamDataById = async () => {
+        const response = await getExamDataByIdApi(props?.data);
+        if (response?.status === 200) {
+            setData(response?.data?.data?.questions);
+        }
+    }
+    const onDragEnd = async (result) => {
         if (!result.destination) {
             return;
         }
+        let newSortOrder = result?.destination?.index;
+        let data = {
+            new_sort_order: newSortOrder + 1,
+            id: result?.draggableId
+        }
+        await updateOptionSortOrder(data);
+        const response = await getExamDataByIdApi(props?.data);
+        if (response?.status === 200) {
+            setData(response?.data?.data?.questions);
+        }
     }
-    // aakhi navi banavani sort order thi 
-    // source che eni current index che and destination thi navi index malse
-    // uper paper ne min and hour ma add karvani che
-    // sort the questions also
+
+    useEffect(() => {
+        getExamDataById()
+    }, [data])
     return (
         <>
             <CModal
@@ -28,10 +48,10 @@ const ViewPaper = (props) => {
                 <CModalHeader>
                     <CModalTitle id="ScrollingLongContentExampleLabel2">Question</CModalTitle>
                 </CModalHeader>
-                
+
                 <CModalBody>
                     <div className="container" style={{ padding: '12px' }}>
-                        {props?.data?.map((que_data, index) => (
+                        {data?.map((que_data, index) => (
                             <CCard
                                 key={index}
                                 className="mb-3"
@@ -43,33 +63,32 @@ const ViewPaper = (props) => {
                                     borderRadius: '8px'
                                 }}
                             >
-
-                                <DragDropContext onDragEnd={onDragEnd}>
-                                    <div>
-                                        <div className="mb-3">
-                                            <div className="d-flex align-items-center">
-                                                <CFormLabel className="form-label me-3" style={{ fontWeight: '600' }}>
-                                                    Que-{index + 1}
-                                                </CFormLabel>
-                                                <CFormLabel className="ms-auto" style={{ fontWeight: '500', padding: '4px 8px', borderRadius: '5px', background: '#f1f1f1' }}>
-                                                    Mark: {que_data?.marks}
-                                                </CFormLabel>
-                                            </div>
-                                            <div style={{
-                                                border: '1px solid #ddd',
-                                                borderRadius: '5px',
-                                                padding: '10px',
-                                                marginTop: '5px',
-                                                background: '#f9f9f9'
-                                            }}>
-                                                <CFormLabel className="m-0" style={{ fontWeight: '500' }}>
-                                                    {que_data?.question}
-                                                </CFormLabel>
-                                            </div>
+                                <div>
+                                    <div className="mb-3">
+                                        <div className="d-flex align-items-center">
+                                            <CFormLabel className="form-label me-3" style={{ fontWeight: '600' }}>
+                                                Que-{index + 1}
+                                            </CFormLabel>
+                                            <CFormLabel className="ms-auto" style={{ fontWeight: '500', padding: '4px 8px', borderRadius: '5px', background: '#f1f1f1' }}>
+                                                Mark: {que_data?.marks}
+                                            </CFormLabel>
                                         </div>
+                                        <div style={{
+                                            border: '1px solid #ddd',
+                                            borderRadius: '5px',
+                                            padding: '10px',
+                                            marginTop: '5px',
+                                            background: '#f9f9f9'
+                                        }}>
+                                            <CFormLabel className="m-0" style={{ fontWeight: '500' }}>
+                                                {que_data?.question}
+                                            </CFormLabel>
+                                        </div>
+                                    </div>
 
-                                        {que_data?.options?.length > 0 && (
-                                            <Droppable droppableId={`droppable-${index}`}>
+                                    {que_data?.options?.length > 0 && (
+                                        <DragDropContext onDragEnd={onDragEnd}>
+                                            <Droppable droppableId={`${index + 1}`} key={`droppable-${index}`}>
                                                 {(provided) => (
                                                     <div
                                                         ref={provided.innerRef}
@@ -78,8 +97,8 @@ const ViewPaper = (props) => {
                                                     >
                                                         {que_data?.options?.map((option_data, opt_index) => (
                                                             <Draggable
-                                                                key={opt_index}
-                                                                draggableId={`draggable-${index}-${opt_index}`}
+                                                                key={`draggable-${option_data?.id}`}
+                                                                draggableId={`${option_data?.id}`}
                                                                 index={opt_index}
                                                             >
                                                                 {(provided) => (
@@ -105,9 +124,10 @@ const ViewPaper = (props) => {
                                                     </div>
                                                 )}
                                             </Droppable>
-                                        )}
-                                    </div>
-                                </DragDropContext>
+                                        </DragDropContext>
+                                    )}
+                                    
+                                </div>
                             </CCard>
                         ))}
                     </div>
