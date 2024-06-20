@@ -51,10 +51,20 @@ export async function updateQuestionDataApi(data) {
     }
 }
 
-// update question sort order
+// update question's option sort order
 export async function updateOptionSortOrder(data) {
     try {
         const response = await callPutApi({ url: "question/sort/update", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// update question sort order
+export async function updateQuestionSortOrder(data) {
+    try {
+        const response = await callPutApi({ url: "question/question_sortOrder/update", body: data });
         return response;
     } catch (error) {
         throw error;
