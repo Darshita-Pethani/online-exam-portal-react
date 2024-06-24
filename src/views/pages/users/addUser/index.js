@@ -11,6 +11,7 @@ import FormButton from '../../../forms/formButton'
 import { ValidationTag } from '../../../../validation'
 import { FormDatePicker } from '../../../forms/dateTimePicker'
 import RadioCheckBoxButton from '../../../forms/radioCheckBoxButton'
+import { standardDataApi } from '../../../../api/standard'
 
 const AddUser = () => {
     const { showNotification } = allDispatch();
@@ -30,6 +31,7 @@ const AddUser = () => {
         address: '',
         role_id: '',
         gender: '',
+        standard_id: '',
         date_of_birth: '',
         status: '',
         imageName: ''
@@ -46,6 +48,7 @@ const AddUser = () => {
     //         return true;
     //     }
     // };
+    console.log('addData: ', addData);
 
     const handleSubmit = async (event) => {
         let formData = new FormData();
@@ -74,6 +77,7 @@ const AddUser = () => {
                 formData.append("phone_no", addData?.phone_no);
                 formData.append("address", addData?.address);
                 formData.append("role_id", addData?.role_id);
+                formData.append("standard_id", addData?.standard_id);
                 formData.append("gender", addData?.gender);
                 formData.append("date_of_birth", addData?.date_of_birth);
                 formData.append("status", addData?.status);
@@ -106,6 +110,7 @@ const AddUser = () => {
                 formData.append("phone_no", addData?.phone_no);
                 formData.append("address", addData?.address);
                 formData.append("role_id", addData?.role_id);
+                formData.append("standard_id", addData?.standard_id);
                 formData.append("gender", addData?.gender);
                 formData.append("date_of_birth", addData?.date_of_birth);
                 formData.append("status", addData?.status);
@@ -185,8 +190,32 @@ const AddUser = () => {
         }
     };
 
+    const [standardData, setStandardData] = useState([]);
+    const getStandardData = async () => {
+        try {
+            const response = await standardDataApi({
+                filters: [{
+                    id: 'status',
+                    value: 1
+                }]
+            });
+
+            if (response?.status === 200) {
+                if (response.data?.data?.rows) {
+                    let roles = response.data.data.rows.map(standard => ({
+                        label: standard?.name,
+                        value: standard?.id
+                    }));
+                    setStandardData(roles);
+                }
+            }
+        } catch (error) {
+            console.log('error:', error);
+        }
+    };
     useEffect(() => {
         getRolesData();
+        getStandardData();
     }, []);
 
     // radioButtonData
@@ -413,6 +442,22 @@ const AddUser = () => {
                                     />
                                 </div>
 
+                                {addData?.role_id == 3 ?
+                                    //  add standard 
+                                    <div div className='col-12 col-md-6 mb-3'>
+                                        <SelectBox
+                                            ariaLabel="Select Standard"
+                                            label="Standard"
+                                            value={addData?.standard_id}
+                                            onChange={(event) => setAddData({ ...addData, standard_id: event.target.value })}
+                                            feedbackInvalid="Standard is required"
+                                            id="validationStandard"
+                                            options={standardData}
+                                            required={addData?.role_id == 3 ? 'true' : 'false'}
+                                        />
+                                    </div> : ''
+                                }
+
                                 {/* status */}
                                 <div className='col-12 col-md-6 mb-3'>
                                     <SelectBox
@@ -459,7 +504,6 @@ const AddUser = () => {
                 </CCard>
             </CCol>
         </CRow >
-
     )
 }
 

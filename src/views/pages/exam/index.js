@@ -17,6 +17,36 @@ import { MdRemoveRedEye } from 'react-icons/md';
 import ViewPaper from './viewPaper'
 import { useDispatch, useSelector } from 'react-redux'
 import { SET_VIEW_PAPER } from "../../../action";
+import styled from 'styled-components';
+
+const StyledDiv = styled.div`
+    background: rgb(138 138 225);
+    width: 100%;
+    min-width: 120px;
+    padding: 5px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    
+    &::after {
+        content: "⮞";
+        position: absolute;
+        top: -3px;
+        right: -15px;
+        height: 35px;
+        width: 35px;
+        border-radius: 50%;
+        background: #5a57df;
+        outline-style: solid;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+`;
 
 const ExamList = () => {
     const navigate = useNavigate();
@@ -131,6 +161,17 @@ const ExamList = () => {
             Cell: ({ row }) => <>{row?.original?.description || "-"}</>
         },
         {
+            accessorKey: 'enrollList',
+            header: 'ENROLL LIST',
+            size: 150,
+            // defaultHiddenColumn: true,
+            Cell: ({ row }) => <>
+                <StyledDiv>
+                    <CFormLabel style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}>Enroll List</CFormLabel>
+                </StyledDiv>
+            </>
+        },
+        {
             accessorKey: 'status',
             header: 'STATUS',
             size: 150,
@@ -199,7 +240,7 @@ const ExamList = () => {
                             <CButton
                                 color="light" style={{ padding: '4px 11px' }}
                                 onClick={() => viewPaper(row?.original?.id)}
-
+                                disabled={row?.original?.questions?.length == 0 ? 'true' : ''}
                             ><MdRemoveRedEye style={{ marginBottom: '4px' }} /></CButton>
                         </CTooltip>
                     </div>

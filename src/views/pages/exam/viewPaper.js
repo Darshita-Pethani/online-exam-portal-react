@@ -65,7 +65,7 @@ const ViewPaper = (props) => {
 
     useEffect(() => {
         getExamDataById()
-    }, [data])
+    }, [])
 
     return (
         <>
@@ -109,24 +109,28 @@ const ViewPaper = (props) => {
                                                             width: '100%',
                                                             position: 'relative',
                                                         }}>
-                                                            <div
-                                                                // jya pn drag karvu hoy icon thi j drag thay to ena mate {...provided.dragHandleProps} lakhi devani
-                                                                {...provided.dragHandleProps}
-                                                                style={{
-                                                                    position: 'absolute',
-                                                                    zIndex: 1,
-                                                                    fontSize: '20px',
-                                                                    top: '-14px',
-                                                                    right: 0
-                                                                }}
-                                                            >
-                                                                <CTooltip
-                                                                    content="Drag question"
-                                                                    placement="top"
+                                                            {
+                                                                data?.length > 1 &&
+                                                                <div
+                                                                    // jya pn drag karvu hoy icon thi j drag thay to ena mate {...provided.dragHandleProps} lakhi devani
+                                                                    {...provided.dragHandleProps}
+                                                                    style={{
+                                                                        position: 'absolute',
+                                                                        zIndex: 1,
+                                                                        fontSize: '20px',
+                                                                        top: '-14px',
+                                                                        right: 0,
+
+                                                                    }}
                                                                 >
-                                                                    <StyledButton><TbDragDrop2 /></StyledButton>
-                                                                </CTooltip>
-                                                            </div>
+                                                                    <CTooltip
+                                                                        content="Drag question"
+                                                                        placement="top"
+                                                                    >
+                                                                        <StyledButton><TbDragDrop2 /></StyledButton>
+                                                                    </CTooltip>
+                                                                </div>
+                                                            }
                                                             <CCard
                                                                 key={index}
                                                                 style={{
