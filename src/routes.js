@@ -81,6 +81,12 @@ const AddQuestionType = React.lazy(() => import('./views/pages/questionType/addQ
 // question
 const AddQuestion = React.lazy(() => import('./views/pages/exam/addQuestion/index'));
 
+// user exam enroll list
+const userExamEnrollList = React.lazy(() => import('./views/pages/exam/userEnrollList/index'));
+
+// user result list
+const userResultList = React.lazy(() => import('./views/pages/users/userResult/index'));
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
@@ -167,6 +173,12 @@ const routes = [
   // question
   { path: '/pages/exam/question/add', name: 'add question type', element: AddQuestion },
   { path: '/pages/exam/question/edit', name: 'edit question type', element: AddQuestion },
+
+  // user exam enroll list
+  { path: '/pages/exam/enroll-list', name: 'enroll list', element: userExamEnrollList },
+
+  // user result
+  { path: '/pages/users/result', name: 'result list', element: userResultList },
 ]
 
 export default routes

@@ -31,7 +31,7 @@ const StyledDiv = styled.div`
     justify-content: center;
     align-items: center;
     position: relative;
-    
+    cursor: pointer;
     &::after {
         content: "⮞";
         position: absolute;
@@ -167,7 +167,10 @@ const ExamList = () => {
             // defaultHiddenColumn: true,
             Cell: ({ row }) => <>
                 <StyledDiv>
-                    <CFormLabel style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}>Enroll List</CFormLabel>
+                    <CFormLabel
+                        style={{ margin: '0', cursor: 'pointer', width: '100%', fontSize: '13px' }}
+                        onClick={userExamEnroll}
+                    >Enroll List</CFormLabel>
                 </StyledDiv>
             </>
         },
@@ -276,6 +279,27 @@ const ExamList = () => {
         dispatch({ type: SET_VIEW_PAPER, paperPopup: true });
     }
 
+    // view enroll list
+    const userExamEnroll = () => {
+        navigate('/pages/exam/enroll-list', {
+            state: {
+                exam_id: questionId
+            }
+        });
+    }
+
+    // Delete record
+    const deleteExam = async (id) => {
+        try {
+            const response = await axios.delete(`/api/v1/exams/${id}`);
+            if (response.status === 200) {
+                showNotification('success', 'Deleted Successfully');
+                setStatusUpdate(true);
+            }
+        } catch (error) {
+            showNotification('error', error.message);
+        }
+    }
     useEffect(() => {
         examsData(defaultFilter);
     }, [defaultFilter, statusUpdate]);

@@ -41,6 +41,7 @@ const UsersList = () => {
             navigate("/");
         }
     }
+
     const columns = useMemo(() => [
         {
             accessorKey: 'full_name',
@@ -122,6 +123,25 @@ const UsersList = () => {
                 }</>
         },
         {
+            accessorKey: 'result',
+            header: 'RESULT',
+            size: 150,
+            enableColumnFilter: false,
+            enableSorting: false,
+            Cell: ({ row }) => <>
+                {
+                    row?.original.role_id === 3 ?
+                        <button
+                            onClick={() => getResultByUser(row?.original?.id)}
+                            style={{ border: '0', padding: '5px 10px', borderRadius: '5px' }}
+                        >
+                            Result
+                        </button>
+                        : '-'
+                }
+            </>
+        },
+        {
             accessorKey: 'status',
             header: 'STATUS',
             size: 150,
@@ -177,6 +197,15 @@ const UsersList = () => {
         });
     }
 
+    // Get Result 
+    const getResultByUser = async (id) => {
+        navigate('/pages/users/result', {
+            state: {
+                id: id,
+            }
+        });
+    }
+
     useEffect(() => {
         usersData();
     }, [defaultFilter, statusUpdate]);
@@ -207,8 +236,7 @@ const UsersList = () => {
                 />
             </div>
 
-            {
-                visible &&
+            {visible &&
                 <ImageModel
                     visible={visible}
                     setVisible={setVisible}

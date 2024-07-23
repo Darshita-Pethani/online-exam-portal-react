@@ -112,3 +112,13 @@ export async function deleteUser(id) {
         throw error;
     }
 }
+
+// Get user enroll list
+export async function GetUserEnrollList(data) {
+    try {
+        const response = await callPostApi({ url: "user_exam_enroll/getDataByexamId/list", body: data });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
