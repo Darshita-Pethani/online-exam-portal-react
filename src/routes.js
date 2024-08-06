@@ -87,6 +87,9 @@ const userExamEnrollList = React.lazy(() => import('./views/pages/exam/userEnrol
 // user result list
 const userResultList = React.lazy(() => import('./views/pages/users/userResult/index'));
 
+// user exam list
+const studentDashboardExamList = React.lazy(() => import('./views/pages/userExamList/index'));
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
@@ -179,6 +182,9 @@ const routes = [
 
   // user result
   { path: '/pages/users/result', name: 'result list', element: userResultList },
+
+  // user exam list
+  { path: 'pages/user/exam/list', name: 'user exam list', element: studentDashboardExamList },
 ]
 
 export default routes

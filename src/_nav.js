@@ -9,6 +9,7 @@ import { ImUserTie } from "react-icons/im";
 import { SiGitbook } from "react-icons/si";
 import { GiNotebook, GiStack } from "react-icons/gi";
 import { PiSealQuestionFill } from "react-icons/pi";
+import { IoNewspaper } from "react-icons/io5";
 
 const _nav = [
   {
@@ -360,6 +361,13 @@ const _nav = [
         to: 'pages/exam/list',
       },
     ],
+  },
+  // user exam List
+  {
+    component: CNavItem,
+    name: 'User Exam List',
+    to: 'pages/user/exam/list',
+    icon: <IoNewspaper customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />
   },
 ]
 

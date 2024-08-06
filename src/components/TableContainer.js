@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { MantineReactTable, useMantineReactTable } from 'mantine-react-table';
 
-const TableContainer = ({ columns, data, title, defaultFilter, setDefaultFilter, rowCount }) => {
+const TableContainer = ({ columns, data, title, defaultFilter, setDefaultFilter, rowCount, enableColumnFilters }) => {
     // columnFilters ma default  onColumnFiltersChange thi j id and value padi jay che
     const [columnFilters, setColumnFilters] = useState([]);
     const [sorting, setSorting] = useState([]);
@@ -50,6 +50,7 @@ const TableContainer = ({ columns, data, title, defaultFilter, setDefaultFilter,
         manualSorting: true,
         manualFiltering: true,
         manualPagination: true,
+        enableColumnFilters,
         // Define states for manual sorting, filtering, and pagination
         // state ma etle nakhyu km k aanu documentaion che aakhu ane a enathi j acceble che
         state: { sorting, columnFilters, pagination },
