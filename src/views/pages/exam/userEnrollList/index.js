@@ -6,7 +6,7 @@ import { GetUserEnrollList } from '../../../../api/user'
 import TableContainer from '../../../../components/TableContainer'
 import { statusData } from '../../utils/helper'
 import UpdateStatus from '../../../../components/updateStatus'
-import { allDispatch } from '../../../../allDispatch';
+import { allDispatch } from '../../../../store/allDispatch'
 import moment from 'moment'
 
 const userExamEnrollList = () => {

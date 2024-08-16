@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { CCard, CCardBody, CCol, CForm, CRow } from '@coreui/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { addRole, getRoleDataByIdApi, updateRoleDataApi } from '../../../../api/role'
 import { allDispatch } from '../../../../allDispatch'
 import { InputBox } from '../../../forms/inputBox'
 import { statusData } from '../../utils/helper'

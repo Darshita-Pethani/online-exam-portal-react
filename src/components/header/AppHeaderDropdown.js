@@ -22,7 +22,7 @@ import {
 } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 import { userLogoutApi } from '../../api/user'
-import { allDispatch } from '../../allDispatch'
+import { allDispatch } from '../../store/allDispatch'
 import { useNavigate } from 'react-router-dom'
 
 const AppHeaderDropdown = () => {

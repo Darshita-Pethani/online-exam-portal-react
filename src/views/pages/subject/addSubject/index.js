@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CCard, CCardBody, CCol, CForm, CRow } from '@coreui/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { allDispatch } from '../../../../allDispatch'
+import { allDispatch } from '../../../../store/allDispatch'
 import { InputBox } from '../../../forms/inputBox'
 import { statusData } from '../../utils/helper'
 import SelectBox from '../../../forms/selectOption'

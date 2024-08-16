@@ -1,6 +1,6 @@
 import React from 'react';
 import { statusUpdateApi } from '../api/user';
-import { allDispatch } from '../allDispatch';
+import { allDispatch } from '../store/allDispatch';
 import styled from 'styled-components';
 import { CButton } from '@coreui/react';
 

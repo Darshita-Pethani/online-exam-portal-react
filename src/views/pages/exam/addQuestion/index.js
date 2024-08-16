@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CCard, CCardBody, CCol, CForm, CFormCheck, CFormLabel, CInputGroup, CInputGroupText, CRow } from '@coreui/react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { allDispatch } from '../../../../allDispatch'
+import { allDispatch } from '../../../../store/allDispatch'
 import { InputBox } from '../../../forms/inputBox'
 import FormButton from '../../../forms/formButton'
 import { addQuestion, updateQuestionDataApi } from '../../../../api/question'
@@ -302,7 +302,6 @@ const AddQuestion = () => {
     // sort order of option after create exam in view exam form 
     // check option with correct ans after add  question form not editable  question form only option can sort order
 
-    // set checked value to ans felid
     const addCheckedValue = (value, name, index) => {
         let que_List = [...addData?.questionList];
         que_List[index] = {
@@ -311,6 +310,7 @@ const AddQuestion = () => {
         };
         setAddData({ ...addData, questionList: que_List });
     }
+
     return (
         <CRow className="justify-content-center">
             <CCol lg={10}>

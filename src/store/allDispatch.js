@@ -21,5 +21,9 @@ export const allDispatch = () => {
         dispatch({ type: actionTypes.SET_USER_LOGOUT_DATA, payload });
     };
 
-    return { showNotification, setUserLoginToken, setUserLoginData , setUserLogoutData };
+    const setModuleData = async (payload) => {
+        dispatch({ type: actionTypes.SET_MODULES_DATA, payload })
+    }
+
+    return { showNotification, setUserLoginToken, setUserLoginData, setUserLogoutData, setModuleData };
 };

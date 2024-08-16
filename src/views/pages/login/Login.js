@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router'
 import {
     CAlert,
     CButton,
@@ -16,26 +16,26 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
-import { userLogin } from '../../../api/user';
-import { allDispatch } from '../../../allDispatch';
-import { Link } from 'react-router-dom';
-import { FaEye } from "react-icons/fa";
-import { FaEyeSlash } from "react-icons/fa";
+import { userLogin } from '../../../api/user'
+import { allDispatch } from '../../../store/allDispatch'
+import { Link } from 'react-router-dom'
+import { FaEye } from 'react-icons/fa'
+import { FaEyeSlash } from 'react-icons/fa'
 
 const Login = () => {
-    const { showNotification, setUserLoginToken, setUserLoginData } = allDispatch();
-    const navigate = useNavigate();
-    const [validated, setValidated] = useState(false);
+    const { showNotification, setUserLoginToken, setUserLoginData, setModuleData } = allDispatch()
+    const navigate = useNavigate()
+    const [validated, setValidated] = useState(false)
 
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-    });
+    })
 
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false)
     const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
-    };
+        setShowPassword(!showPassword)
+    }
 
     const handleSubmit = async (event) => {
         const form = event.currentTarget
@@ -44,28 +44,29 @@ const Login = () => {
             event.stopPropagation()
         } else {
             event.preventDefault()
-            let response = await userLogin(formData);
+            let response = await userLogin(formData)
             if (response.status === 200) {
                 showNotification({
-                    title: "Success",
+                    title: 'Success',
                     message: response?.data?.message,
                     status: 'success',
-                    isOpen: true
-                });
-                setValidated(true);
-                setUserLoginToken(response?.data?.data?.token);
-                setUserLoginData(JSON.stringify(response?.data?.data));
-                navigate("/dashboard")
+                    isOpen: true,
+                })
+                setValidated(true)
+                setUserLoginToken(response?.data?.data?.token)
+                setUserLoginData(JSON.stringify(response?.data?.data))
+                setModuleData(JSON.stringify(response?.data?.data?.role?.modules))
+                navigate('/dashboard')
             } else {
                 showNotification({
-                    title: "Error",
+                    title: 'Error',
                     message: response?.data?.message,
                     status: 'danger',
-                    isOpen: true
-                });
+                    isOpen: true,
+                })
             }
         }
-        form.classList.add('was-validated');
+        form.classList.add('was-validated')
     }
 
     return (
@@ -91,11 +92,13 @@ const Login = () => {
                                             <CFormInput
                                                 id="email"
                                                 placeholder="Email"
-                                                name='email'
+                                                name="email"
                                                 autoComplete="email"
                                                 feedbackInvalid="This field is required"
                                                 value={formData.email}
-                                                onChange={(event) => setFormData({ ...formData, email: event.target.value })}
+                                                onChange={(event) =>
+                                                    setFormData({ ...formData, email: event.target.value })
+                                                }
                                                 required
                                             />
                                         </CInputGroup>
@@ -104,36 +107,54 @@ const Login = () => {
                                                 <CIcon icon={cilLockLocked} />
                                             </CInputGroupText>
                                             <CFormInput
-                                                id='Password'
+                                                id="Password"
                                                 type={showPassword === true ? 'text' : 'password'}
-                                                name='password'
+                                                name="password"
                                                 placeholder="Password"
                                                 autoComplete="current-password"
                                                 feedbackInvalid="This field is required"
                                                 value={formData.password}
-                                                onChange={(event) => setFormData({ ...formData, password: event.target.value })}
+                                                onChange={(event) =>
+                                                    setFormData({ ...formData, password: event.target.value })
+                                                }
                                                 required
                                             />
-                                            {
-                                                showPassword === true ?
-                                                    <FaEye
-                                                        style={{ position: 'absolute', right: '12px', bottom: '10px', cursor: 'pointer' }}
-                                                        onClick={handleClickShowPassword}
-                                                    /> :
-                                                    <FaEyeSlash
-                                                        style={{ position: 'absolute', right: '12px', bottom: '10px', cursor: 'pointer' }}
-                                                        onClick={handleClickShowPassword}
-                                                    />
-                                            }
+                                            {showPassword === true ? (
+                                                <FaEye
+                                                    style={{
+                                                        position: 'absolute',
+                                                        right: '12px',
+                                                        bottom: '10px',
+                                                        cursor: 'pointer',
+                                                    }}
+                                                    onClick={handleClickShowPassword}
+                                                />
+                                            ) : (
+                                                <FaEyeSlash
+                                                    style={{
+                                                        position: 'absolute',
+                                                        right: '12px',
+                                                        bottom: '10px',
+                                                        cursor: 'pointer',
+                                                    }}
+                                                    onClick={handleClickShowPassword}
+                                                />
+                                            )}
                                         </CInputGroup>
-                                        <CRow style={{ alignItems: 'center !important' }} className='login_btn_sec'>
+                                        <CRow style={{ alignItems: 'center !important' }} className="login_btn_sec">
                                             <CCol style={{ marginTop: '20px !important' }}>
                                                 <CButton color="primary" className="px-4" type="submit">
                                                     Login
                                                 </CButton>
                                             </CCol>
                                             <CCol style={{ textAlign: 'end', padding: 0 }}>
-                                                <Link to="/forgot-password" color="primary" className="mt-3" active tabIndex={-1}>
+                                                <Link
+                                                    to="/forgot-password"
+                                                    color="primary"
+                                                    className="mt-3"
+                                                    active
+                                                    tabIndex={-1}
+                                                >
                                                     forgot password
                                                 </Link>
                                             </CCol>

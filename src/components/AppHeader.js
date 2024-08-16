@@ -27,7 +27,7 @@ import {
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
-import { SET_SIDEBAR } from '../action'
+import { SET_SIDEBAR } from '../store/action'
 
 const AppHeader = () => {
     const headerRef = useRef()

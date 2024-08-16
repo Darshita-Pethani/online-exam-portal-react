@@ -1,6 +1,6 @@
 import { CButton, CCard, CFormCheck, CFormLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CTooltip } from "@coreui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { SET_VIEW_PAPER } from "../../../action";
+import { SET_VIEW_PAPER } from "../../../store/action";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { updateOptionSortOrder, updateQuestionSortOrder } from "../../../api/question";
 import { getExamDataByIdApi } from "../../../api/exam";

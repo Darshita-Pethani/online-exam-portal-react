@@ -18,7 +18,7 @@ import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
 import navigation from '../_nav'
-import { SET_SIDEBAR } from '../action'
+import { SET_SIDEBAR } from '../store/action'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
