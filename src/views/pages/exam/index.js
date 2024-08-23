@@ -21,7 +21,7 @@ import { MdDelete } from 'react-icons/md'
 import { DeleteRecord } from '../../../components/deleteRecord'
 import FormButton from '../../forms/formButton'
 import moment from 'moment'
-import { examDataApi } from '../../../api/exam'
+import { deleteExam, examDataApi } from '../../../api/exam'
 import { GrFormAdd } from 'react-icons/gr'
 import { MdRemoveRedEye } from 'react-icons/md'
 import ViewPaper from './viewPaper'
@@ -397,19 +397,6 @@ const ExamList = () => {
                 exam_id: questionId,
             },
         })
-    }
-
-    // Delete record
-    const deleteExam = async (id) => {
-        try {
-            const response = await axios.delete(`/api/v1/exams/${id}`)
-            if (response.status === 200) {
-                showNotification('success', 'Deleted Successfully')
-                setStatusUpdate(true)
-            }
-        } catch (error) {
-            showNotification('error', error.message)
-        }
     }
 
     useEffect(() => {
