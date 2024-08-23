@@ -52,7 +52,7 @@ const _nav = [
         to: 'pages/standard/list',
         // icon: <GiStack customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
         icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
-        module: moduleList.STANDARDS,
+        module: moduleList.STANDARD,
     },
     // subject
     {
@@ -72,7 +72,7 @@ const _nav = [
         to: 'pages/question-type/list',
         // icon: <PiSealQuestionFill customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
         icon: <CIcon icon={cibQuora} customClassName="nav-icon" />,
-        module: moduleList.QUESTIONS,
+        module: moduleList.QUESTION_TYPES,
     },
     // exam
     {
