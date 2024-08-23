@@ -6,10 +6,9 @@ export const initialState = {
     isLogin: false,
     moduleData: [],
 }
-
 const convertPermissionToBoolean = (modules) => {
-    return modules.map((module) => {
-        return {
+    return modules?.map((module) => {
+        const convertedModule = {
             ...module,
             permissions: {
                 ...module.permissions,
@@ -17,9 +16,11 @@ const convertPermissionToBoolean = (modules) => {
                 write_access: Boolean(module.permissions.write_access),
                 delete_access: Boolean(module.permissions.delete_access),
             },
-        }
-    })
-}
+        };
+        return convertedModule;
+    });
+};
+
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -36,7 +37,6 @@ const userReducer = (state = initialState, action) => {
                 userData: action.payload,
             }
         case actionTypes.SET_MODULES_DATA:
-            localStorage.setItem('moduleData', action.payload);
             return {
                 ...state,
                 moduleData: convertPermissionToBoolean(action.payload),

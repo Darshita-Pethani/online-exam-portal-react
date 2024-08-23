@@ -14,12 +14,18 @@ const AddRole = () => {
     const [validated, setValidated] = useState(false)
     const navigate = useNavigate()
     const location = useLocation()
-    const [module, setModule] = useState([]);
+    const [module, setModule] = useState([])
+    const [permissionData, setPermissionData] = useState([])
 
     const [formData, setFormData] = useState({
         name: '',
         status: '',
     })
+
+    const withPermission = {
+        ...formData,
+        permissions: permissionData,
+    }
 
     const handleSubmit = async (event) => {
         const form = event.currentTarget
@@ -29,7 +35,7 @@ const AddRole = () => {
         } else {
             event.preventDefault()
             if (location?.state?.editData) {
-                let response = await updateRoleDataApi(formData)
+                let response = await updateRoleDataApi(withPermission)
                 if (response.status === 200) {
                     showNotification({
                         title: 'Success',
@@ -48,7 +54,7 @@ const AddRole = () => {
                     })
                 }
             } else {
-                let response = await addRole(formData)
+                let response = await addRole(withPermission)
                 if (response.status === 200) {
                     showNotification({
                         title: 'Success',
@@ -73,9 +79,8 @@ const AddRole = () => {
     }
 
     const getRoleDataById = async (id) => {
-        const response = await getRoleDataByIdApi(id);
+        const response = await getRoleDataByIdApi(id)
         if (response?.status === 200) {
-            // setModule(response?.data?.data?.permissions)
             setFormData(response?.data?.data)
         } else if (response?.status === 401) {
             navigate('/')
@@ -83,7 +88,7 @@ const AddRole = () => {
     }
 
     const getModuleAccess = async (value) => {
-        const response = await getModuleListApi();
+        const response = await getModuleListApi()
         const moduleData = response?.data?.data
         if (response.status === 200) {
             if (value === false) {
@@ -91,62 +96,78 @@ const AddRole = () => {
                     return {
                         ...data,
                         permissions: {
+                            module_id: data?.id,
                             read_access: false,
                             write_access: false,
-                            delete_access: false
-                        }
+                            delete_access: false,
+                        },
                     }
-                });
-                setModule(permissions);
+                })
+                setModule(permissions)
             }
 
             if (value === true) {
-                moduleData?.map((data) => {
+                if (location?.state?.permissions?.length > 0) {
+                    const permissions = location?.state?.permissions?.map((data) => {
+                        let module = data?.module
+                        return {
+                            ...module,
+                            name: data.module?.name,
+                            permissions: {
+                                module_id: data?.module_id,
+                                read_access: data?.read_access ? data?.read_access : false,
+                                write_access: data?.write_access ? data?.write_access : false,
+                                delete_access: data?.delete_access ? data?.delete_access : false,
+                            },
+                        }
+                    })
+                    setModule(permissions)
+                } else {
                     const permissions = moduleData?.map((data) => {
                         return {
                             ...data,
                             permissions: {
+                                module_id: data?.id,
                                 read_access: false,
                                 write_access: false,
-                                delete_access: false
-                            }
+                                delete_access: false,
+                            },
                         }
-                    });
-                    setModule(permissions);
-                });
+                    })
+                    setModule(permissions)
+                }
             }
         }
     }
 
     useEffect(() => {
         if (location?.state?.editData || location?.state?.id) {
-            getRoleDataById(location?.state?.id);
+            getRoleDataById(location?.state?.id)
             getModuleAccess(true)
         } else {
             let moduleData = localStorage.getItem('moduleData')
-            setModule(moduleData ? JSON.parse(moduleData) : '');
+            setModule(moduleData ? JSON.parse(moduleData) : '')
             getModuleAccess(false)
         }
     }, [])
 
     const changeAccess = (index, checked, accessName) => {
-        const newModules = [...module];
-        const modulePermission = newModules[index];
+        const newModules = [...module]
+        const modulePermission = newModules[index]
 
-        if (accessName === "read_access") {
+        if (accessName === 'read_access' || (!modulePermission.permissions.write_access && !modulePermission.permissions.delete_access)) {
             modulePermission.permissions.read_access = checked
         }
 
-        if (accessName === "write_access") {
+        if (accessName === 'write_access' || !modulePermission.permissions.read_access) {
             modulePermission.permissions.write_access = checked
         }
 
-        if (accessName === "delete_access") {
+        if (accessName === 'delete_access' || !modulePermission.permissions.read_access) {
             modulePermission.permissions.delete_access = checked
         }
-
-        console.log('newModules: ', modulePermission.permissions);
-
+        setModule(newModules)
+        setPermissionData(newModules?.map((module) => module?.permissions))
     }
 
     return (
@@ -190,22 +211,23 @@ const AddRole = () => {
                                     />
                                 </div>
 
-                                <div className='my-5'>
+                                <div className="my-5">
                                     {module?.map((item, index) => (
                                         <>
-                                            <div className='d-flex justify-content-between my-3' key={item.id}>
+                                            <div className="d-flex justify-content-between my-3" key={item.id}>
+                                                <div>{item?.name}</div>
                                                 <div>
-                                                    {item?.name}
-                                                </div>
-                                                <div>
-                                                    <CButtonGroup role="group" aria-label="Basic checkbox toggle button group">
+                                                    <CButtonGroup
+                                                        role="group"
+                                                        aria-label="Basic checkbox toggle button group"
+                                                    >
                                                         <CFormCheck
                                                             button={{ color: 'primary', variant: 'outline' }}
                                                             value={item?.permissions?.read_access}
                                                             id={`read${item?.id}`}
                                                             autoComplete="off"
                                                             label="Read"
-                                                            onChange={(e) => changeAccess(index, e.target.checked, "read_access")}
+                                                            onChange={(e) => changeAccess(index, e.target.checked, 'read_access')}
                                                             checked={item?.permissions?.read_access}
                                                         />
                                                         <CFormCheck
@@ -214,7 +236,9 @@ const AddRole = () => {
                                                             id={`write${item?.id}`}
                                                             autoComplete="off"
                                                             label="Write"
-                                                            onChange={(e) => changeAccess(index, e.target.checked, "write_access")}
+                                                            onChange={(e) =>
+                                                                changeAccess(index, e.target.checked, 'write_access')
+                                                            }
                                                             checked={item?.permissions?.write_access}
                                                         />
                                                         <CFormCheck
@@ -223,7 +247,9 @@ const AddRole = () => {
                                                             id={`delete${item?.id}`}
                                                             autoComplete="off"
                                                             label="Delete"
-                                                            onChange={(e) => changeAccess(index, e.target.checked, "delete_access")}
+                                                            onChange={(e) =>
+                                                                changeAccess(index, e.target.checked, 'delete_access')
+                                                            }
                                                             checked={item?.permissions?.delete_access}
                                                         />
                                                     </CButtonGroup>
@@ -263,7 +289,6 @@ const AddRole = () => {
                                     />
                                 </div>
                             </div>
-
                         </CForm>
                     </CCardBody>
                 </CCard>

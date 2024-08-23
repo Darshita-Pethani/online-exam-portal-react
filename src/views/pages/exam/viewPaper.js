@@ -21,7 +21,7 @@ const ViewPaper = (props) => {
     const [data, setData] = useState([]);
 
     const dispatch = useDispatch();
-    const paperPopup = useSelector((state) => state?.paperPopup);
+    const paperPopup = useSelector((state) => state?.common?.paperPopup);
 
     const getExamDataById = async () => {
         const response = await getExamDataByIdApi(props?.data);

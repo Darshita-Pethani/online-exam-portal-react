@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -6,14 +6,10 @@ import SimpleBar from 'simplebar-react'
 import 'simplebar-react/dist/simplebar.min.css'
 
 import { CBadge, CNavLink, CSidebarNav } from '@coreui/react'
+import { useSelector } from 'react-redux'
 
 export const AppSidebarNav = ({ items }) => {
-    const [modules, setModules] = useState();
-
-    useEffect(() => {
-        const allModules = localStorage.getItem("moduleData");
-        setModules(allModules ? JSON.parse(allModules) : []);
-    }, [])
+    const modules = useSelector((state) => state?.user?.moduleData)
 
     const navLink = (name, icon, badge, indent = false) => {
         return (
@@ -68,31 +64,27 @@ export const AppSidebarNav = ({ items }) => {
             {items?.map((menu, index) => {
                 switch (menu.type) {
                     case 'collapse':
-                        let count = 0;
-                        menu?.items?.map((childMenu) => {
-                            let getReadAccess = modules?.filter((item) => item?.name === childMenu?.module);
-                            if (getReadAccess && getReadAccess[0]?.permissions?.read_access) {
-                                count++;
-                            }
-                        });
+                        const filteredItems = menu?.items?.filter((childMenu) => {
+                            let getReadAccess = modules?.find((item) => item?.name === childMenu?.module)
+                            return getReadAccess && getReadAccess.permissions?.read_access
+                        })
 
-                        if (count > 0) {
-                            return navGroup(menu, index);
-                        } else {
-                            return;
+                        if (filteredItems?.length > 0) {
+                            return navGroup({ ...menu, items: filteredItems }, index)
                         }
+                        return null // Return null if no items with read_access
+
                     case 'item':
-                        let getReadAccess = modules?.filter((item) => item?.name === menu?.module);
-                        if (getReadAccess && getReadAccess[0]?.permissions?.read_access) {
-                            return navItem(menu, index);
-                        } else {
-                            return;
+                        let getReadAccess = modules?.find((item) => item?.name === menu?.module)
+                        if (getReadAccess && getReadAccess.permissions?.read_access) {
+                            return navItem(menu, index)
                         }
+                        return null // Return null if no read_access
+
                     default:
-                        return (<div>Menu Items Error</div>);
+                        return <div>Menu Items Error</div>
                 }
-            })
-            }
+            })}
         </CSidebarNav>
     )
 }

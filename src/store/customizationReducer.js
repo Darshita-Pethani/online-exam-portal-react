@@ -1,18 +1,10 @@
 import * as actionTypes from './action'
 
-
 export const initialState = {
     sidebarShow: true,
     theme: 'light',
-    snackbar: {
-        title: '',
-        message: '',
-        status: '',
-        isOpen: false,
-    },
-    paperPopup: false,
+    sidebarUnfoldable: false
 }
-
 
 const customizationReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -21,16 +13,10 @@ const customizationReducer = (state = initialState, action) => {
                 ...state,
                 sidebarShow: action.sidebarShow,
             }
-        case actionTypes.SET_NOTIFICATION:
+        case actionTypes.SET_SIDEBAR_UNFOLDABLE:
             return {
                 ...state,
-                snackbar: action.payload,
-            }
-        // show view paper in exam list
-        case actionTypes.SET_VIEW_PAPER:
-            return {
-                ...state,
-                paperPopup: action.paperPopup,
+                sidebarUnfoldable: action.sidebarUnfoldable,
             }
         default:
             return state

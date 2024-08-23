@@ -8,6 +8,7 @@ import { statusData } from '../../utils/helper'
 import UpdateStatus from '../../../../components/updateStatus'
 import { allDispatch } from '../../../../store/allDispatch'
 import moment from 'moment'
+import FormButton from '../../../forms/formButton'
 
 const userExamEnrollList = () => {
     const navigate = useNavigate();
@@ -33,7 +34,7 @@ const userExamEnrollList = () => {
             navigate("/");
         }
     }
-    
+
     const columns = useMemo(() => [
         {
             accessorKey: 'Full name',
@@ -102,6 +103,19 @@ const userExamEnrollList = () => {
                     defaultFilter={defaultFilter}
                     setDefaultFilter={setDefaultFilter}
                     rowCount={rowCount}
+                />
+            </div>
+            <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                <FormButton
+                    style={{
+                        color: 'white', fontSize: '16px', fontWeight: '500',
+                        backgroundColor: 'var(--cui-secondary)',
+                        textAlign: 'end'
+                    }}
+                    label='Back To Exam'
+                    hoverBgColor='#44484b'
+                    hoverFontColor='white'
+                    onClick={() => navigate('/pages/exam/list')}
                 />
             </div>
         </CCardBody>

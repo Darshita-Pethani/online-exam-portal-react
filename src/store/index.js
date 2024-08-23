@@ -8,16 +8,18 @@ import storage from 'redux-persist/lib/storage'
 import persistReducer from 'redux-persist/es/persistReducer'
 import customizationReducer from './customizationReducer'
 import userReducer from './userReducer'
+import commonReducer from './commonReducer'
 
 // set reducer to the localStorage
 const persistConfig = {
     key: 'userData',
     storage,
-    whitelist: ['user'],
+    whitelist: ['user', 'customization'],
 }
 const rootReducer = combineReducers({
     customization: customizationReducer,
-    user: userReducer
+    user: userReducer,
+    common: commonReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

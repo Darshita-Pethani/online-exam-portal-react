@@ -4,7 +4,7 @@ import { CAlert, CFormLabel } from "@coreui/react";
 
 const Instruction = (props) => {
     return (
-        <div className="card p-0 mb-5" style={{ borderTop: '3px solid #b07474' }} >
+        <div className="card p-0 mb-5" style={{ borderLeft: '3px solid #b07474' }} >
             <div className="card-header">
                 <h6 className="card-title" style={{ fontSize: '17px', marginTop: '8px' }}>Exam Information</h6>
             </div>

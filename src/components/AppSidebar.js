@@ -18,12 +18,12 @@ import { sygnet } from 'src/assets/brand/sygnet'
 
 // sidebar nav config
 import navigation from '../_nav'
-import { SET_SIDEBAR } from '../store/action'
+import { SET_SIDEBAR, SET_SIDEBAR_UNFOLDABLE } from '../store/action'
 
 const AppSidebar = () => {
   const dispatch = useDispatch()
-  const unfoldable = useSelector((state) => state.sidebarUnfoldable)
-  const sidebarShow = useSelector((state) => state.sidebarShow);
+  const unfoldable = useSelector((state) => state?.customization?.sidebarUnfoldable)
+  const sidebarShow = useSelector((state) => state?.customization?.sidebarShow)
 
   return (
     <CSidebar
@@ -50,7 +50,7 @@ const AppSidebar = () => {
       <AppSidebarNav items={navigation} />
       <CSidebarFooter className="border-top d-none d-lg-flex">
         <CSidebarToggler
-          onClick={() => dispatch({ type: SET_SIDEBAR, sidebarUnfoldable: !unfoldable })}
+          onClick={() => dispatch({ type: SET_SIDEBAR_UNFOLDABLE, sidebarUnfoldable: !unfoldable })}
         />
       </CSidebarFooter>
     </CSidebar>

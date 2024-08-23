@@ -1,6 +1,6 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilSpeedometer } from '@coreui/icons'
+import { cibHackhands, cibQuora, cibStackbit, cilBook, cilListRich, cilPenAlt, cilPeople, cilSpeedometer, cilUser } from '@coreui/icons'
 import { FaUsers } from 'react-icons/fa'
 import { CNavGroup, CNavItem } from '@coreui/react'
 import { ImUserTie } from 'react-icons/im'
@@ -30,7 +30,8 @@ const _nav = [
         type: 'item',
         name: 'Role',
         to: 'pages/role/list',
-        icon: <ImUserTie customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        // icon: <ImUserTie customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
         module: moduleList.ROLES,
     },
     // user
@@ -39,7 +40,8 @@ const _nav = [
         type: 'item',
         name: 'Users',
         to: 'pages/users/list',
-        icon: <FaUsers customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        // icon: <FaUsers customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
         module: moduleList.USERS,
     },
     // standard
@@ -48,7 +50,8 @@ const _nav = [
         type: 'item',
         name: 'Standard',
         to: 'pages/standard/list',
-        icon: <GiStack customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        // icon: <GiStack customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        icon: <CIcon icon={cilBook} customClassName="nav-icon" />,
         module: moduleList.STANDARDS,
     },
     // subject
@@ -57,7 +60,8 @@ const _nav = [
         type: 'item',
         name: 'Subject',
         to: 'pages/subject/list',
-        icon: <SiGitbook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        // icon: <SiGitbook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        icon: <CIcon icon={cibStackbit} customClassName="nav-icon" />,
         module: moduleList.SUBJECTS,
     },
     // question types
@@ -66,7 +70,8 @@ const _nav = [
         type: 'item',
         name: 'Question Type',
         to: 'pages/question-type/list',
-        icon: <PiSealQuestionFill customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        // icon: <PiSealQuestionFill customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        icon: <CIcon icon={cibQuora} customClassName="nav-icon" />,
         module: moduleList.QUESTIONS,
     },
     // exam
@@ -75,31 +80,25 @@ const _nav = [
         type: 'collapse',
         name: 'Exam',
         to: 'pages/exam/list',
-        icon: <GiNotebook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        // icon: <GiNotebook customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
+        icon: <CIcon icon={cilPenAlt} customClassName="nav-icon" />,
         module: moduleList.EXAMS,
         items: [
             {
                 component: CNavItem,
                 name: 'Exam Type',
+                type: 'item',
                 to: 'pages/exam-type/list',
                 module: moduleList.EXAM_TYPE_LIST,
             },
             {
                 component: CNavItem,
                 name: 'Exam',
+                type: 'item',
                 to: 'pages/exam/list',
                 module: moduleList.EXAMS,
             },
         ],
-    },
-    // user exam List
-    {
-        component: CNavItem,
-        type: 'item',
-        name: 'User Exam List',
-        to: 'pages/user/exam/list',
-        module: moduleList.EXAMS,
-        icon: <IoNewspaper customClassName="nav-icon" style={{ marginRight: '0.75rem' }} />,
     },
 ]
 

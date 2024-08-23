@@ -21,11 +21,14 @@ import { allDispatch } from '../../../store/allDispatch'
 import { Link } from 'react-router-dom'
 import { FaEye } from 'react-icons/fa'
 import { FaEyeSlash } from 'react-icons/fa'
+import { useDispatch } from 'react-redux';
+import { SET_MODULES_DATA } from '../../../store/action';
 
 const Login = () => {
-    const { showNotification, setUserLoginToken, setUserLoginData, setModuleData } = allDispatch()
+    const { showNotification, setUserLoginToken, setUserLoginData } = allDispatch()
     const navigate = useNavigate()
     const [validated, setValidated] = useState(false)
+    const dispatch = useDispatch();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -55,7 +58,10 @@ const Login = () => {
                 setValidated(true)
                 setUserLoginToken(response?.data?.data?.token)
                 setUserLoginData(JSON.stringify(response?.data?.data))
-                setModuleData(JSON.stringify(response?.data?.data?.role?.modules))
+                dispatch({
+                    type: SET_MODULES_DATA,
+                    payload: response.data.data.role.modules,
+                });
                 navigate('/dashboard')
             } else {
                 showNotification({
