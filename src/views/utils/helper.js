@@ -8,3 +8,9 @@ export let statusData = [
         value: '0'
     }
 ]
+
+export let roleTypes = {
+    ADMIN: "Admin",
+    TEACHERs: "Teachers",
+    STUDENTS: "Students",
+}

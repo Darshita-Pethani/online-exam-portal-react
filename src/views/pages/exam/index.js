@@ -13,7 +13,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom'
 import TableContainer from '../../../components/TableContainer'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { statusData } from '../utils/helper'
+import { statusData } from '../../utils/helper'
 import UpdateStatus from '../../../components/updateStatus'
 import { allDispatch } from '../../../store/allDispatch'
 import { CiEdit } from 'react-icons/ci'

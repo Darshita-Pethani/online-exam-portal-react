@@ -22,7 +22,8 @@ import { Link } from 'react-router-dom'
 import { FaEye } from 'react-icons/fa'
 import { FaEyeSlash } from 'react-icons/fa'
 import { useDispatch } from 'react-redux';
-import { SET_MODULES_DATA } from '../../../store/action';
+import { SET_MODULES_DATA, SET_STANDARD_ID } from '../../../store/action';
+import { roleTypes } from '../../utils/helper'
 
 const Login = () => {
     const { showNotification, setUserLoginToken, setUserLoginData } = allDispatch()
@@ -47,7 +48,7 @@ const Login = () => {
             event.stopPropagation()
         } else {
             event.preventDefault()
-            let response = await userLogin(formData)
+            let response = await userLogin(formData);
             if (response.status === 200) {
                 showNotification({
                     title: 'Success',
@@ -62,6 +63,12 @@ const Login = () => {
                     type: SET_MODULES_DATA,
                     payload: response.data.data.role.modules,
                 });
+                if (response?.data?.data?.role?.name === roleTypes?.STUDENTS) {
+                    dispatch({
+                        type: SET_STANDARD_ID,
+                        payload: response?.data?.data?.standard_user_relation?.standard
+                    });
+                }
                 navigate('/dashboard')
             } else {
                 showNotification({

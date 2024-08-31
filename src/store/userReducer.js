@@ -5,6 +5,7 @@ export const initialState = {
     token: '',
     isLogin: false,
     moduleData: [],
+    standard_id: {}
 }
 const convertPermissionToBoolean = (modules) => {
     return modules?.map((module) => {
@@ -35,6 +36,11 @@ const userReducer = (state = initialState, action) => {
             return {
                 ...state,
                 userData: action.payload,
+            }
+        case actionTypes.SET_STANDARD_ID:
+            return {
+                ...state,
+                standard_id: action.payload,
             }
         case actionTypes.SET_MODULES_DATA:
             return {

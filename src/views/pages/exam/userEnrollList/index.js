@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css"
 import { GetUserEnrollList } from '../../../../api/user'
 import TableContainer from '../../../../components/TableContainer'
-import { statusData } from '../../utils/helper'
+import { statusData } from '../../../utils/helper'
 import UpdateStatus from '../../../../components/updateStatus'
 import { allDispatch } from '../../../../store/allDispatch'
 import moment from 'moment'

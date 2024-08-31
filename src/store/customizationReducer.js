@@ -3,7 +3,8 @@ import * as actionTypes from './action'
 export const initialState = {
     sidebarShow: true,
     theme: 'light',
-    sidebarUnfoldable: false
+    sidebarUnfoldable: false,
+    showStudentsQuestionList: []
 }
 
 const customizationReducer = (state = initialState, action) => {
@@ -17,6 +18,11 @@ const customizationReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sidebarUnfoldable: action.sidebarUnfoldable,
+            }
+        case actionTypes.SET_SHOW_STUDENTS_QUESTIONS:
+            return {
+                ...state,
+                showStudentsQuestionList: action.payload,
             }
         default:
             return state

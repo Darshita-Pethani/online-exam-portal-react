@@ -4,10 +4,11 @@ import { json, Link, useLocation, useNavigate } from 'react-router-dom'
 import { addRole, getRoleDataByIdApi, updateRoleDataApi } from '../../../../api/role'
 import { allDispatch } from '../../../../store/allDispatch'
 import { InputBox } from '../../../forms/inputBox'
-import { statusData } from '../../utils/helper'
+import { statusData } from '../../../utils/helper'
 import SelectBox from '../../../forms/selectOption'
 import FormButton from '../../../forms/formButton'
 import { getModuleListApi } from '../../../../api/module'
+import { useSelector } from 'react-redux'
 
 const AddRole = () => {
     const { showNotification } = allDispatch()
@@ -16,6 +17,7 @@ const AddRole = () => {
     const location = useLocation()
     const [module, setModule] = useState([])
     const [permissionData, setPermissionData] = useState([])
+    const moduleList = useSelector((state) => state?.user?.moduleList?.moduleData);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -145,8 +147,7 @@ const AddRole = () => {
             getRoleDataById(location?.state?.id)
             getModuleAccess(true)
         } else {
-            let moduleData = localStorage.getItem('moduleData')
-            setModule(moduleData ? JSON.parse(moduleData) : '')
+            setModule(moduleList)
             getModuleAccess(false)
         }
     }, [])
@@ -154,16 +155,16 @@ const AddRole = () => {
     const changeAccess = (index, checked, accessName) => {
         const newModules = [...module]
         const modulePermission = newModules[index]
-
-        if (accessName === 'read_access' || (!modulePermission.permissions.write_access && !modulePermission.permissions.delete_access)) {
+        
+        if (accessName === 'read_access' || (!modulePermission?.permissions?.write_access && !modulePermission?.permissions?.delete_access)) {
             modulePermission.permissions.read_access = checked
         }
 
-        if (accessName === 'write_access' || !modulePermission.permissions.read_access) {
+        if (accessName === 'write_access' || !modulePermission?.permissions?.read_access) {
             modulePermission.permissions.write_access = checked
         }
 
-        if (accessName === 'delete_access' || !modulePermission.permissions.read_access) {
+        if (accessName === 'delete_access' || !modulePermission?.permissions?.read_access) {
             modulePermission.permissions.delete_access = checked
         }
         setModule(newModules)

@@ -1,6 +1,6 @@
 import _nav from "../../_nav";
 
-export const moduleList = {
+export let moduleList = {
     ROLES: "Roles",
     USERS: "Users",
     QUESTIONS: "Questions",
@@ -14,6 +14,8 @@ export const moduleList = {
     DASHBOARD: "Dashboard",
 }
 
+
+// set permission module wise to show user read,write,access
 export async function setPermissionInAction(navModules, modules, location) {
     try {
         let moduleData;

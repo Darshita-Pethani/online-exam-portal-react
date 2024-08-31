@@ -3,7 +3,7 @@ import { CCard, CCardBody, CCol, CForm, CFormInput, CImage, CRow } from '@coreui
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { allDispatch } from '../../../../store/allDispatch'
 import { InputBox, InputTextArea } from '../../../forms/inputBox'
-import { statusData } from '../../utils/helper'
+import { statusData } from '../../../utils/helper'
 import SelectBox from '../../../forms/selectOption'
 import { addUser, getUsersDataByIdApi, updateUser } from '../../../../api/user'
 import { roleDataApi } from '../../../../api/role'
@@ -48,7 +48,6 @@ const AddUser = () => {
     //         return true;
     //     }
     // };
-    console.log('addData: ', addData);
 
     const handleSubmit = async (event) => {
         let formData = new FormData();
@@ -140,7 +139,7 @@ const AddUser = () => {
     const getUserDataById = async (id) => {
         const response = await getUsersDataByIdApi(id);
         if (response?.status === 200) {
-            setAddData({ ...addData, ...response?.data?.data, imageName: "C:\\fakepath\\admin_img.png" });
+            setAddData({ ...addData, ...response?.data?.data, imageName: "C:\\fakepath\\admin_img.png", standard_id: response?.data?.data?.standard_user_relation?.standard?.id });
             // setAddData({ ...response?.data?.data, imageName: '' });
             // setAddData(response?.data?.data);
             setImage(response?.data?.data?.image);
