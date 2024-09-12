@@ -90,6 +90,9 @@ const userResultList = React.lazy(() => import('./views/pages/users/userResult/i
 // student start exam paper
 const studentStartExam = React.lazy(() => import('./views/pages/userDisplayExam'));
 
+  // student view result or profile
+const profileResult = React.lazy(() => import('./views/dashboard/ProfileResultView'));
+
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
@@ -185,6 +188,9 @@ const routes = [
 
   // studentStartExam
   { path: '/pages/student/exam', name: 'paper list', element: studentStartExam },
+
+  // student view result or profile
+  { path: '/pages/student/profile-result', name: 'profile result', element: profileResult },
 
 ]
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     CAvatar,
     CBadge,
@@ -24,10 +24,13 @@ import CIcon from '@coreui/icons-react'
 import { userLogoutApi } from '../../api/user'
 import { allDispatch } from '../../store/allDispatch'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const AppHeaderDropdown = () => {
     const { showNotification, setUserLogoutData } = allDispatch();
     const navigate = useNavigate();
+    const userInfo = useSelector(state => state?.user?.userData);
+    const [userData, setUserData] = useState([])
 
     const handleLogout = async () => {
         let response = await userLogoutApi();
@@ -43,13 +46,29 @@ const AppHeaderDropdown = () => {
             });
         }
     };
+
+    // go to profile tab
+    const handleProfile = () => {
+        navigate('/pages/student/profile-result', {
+            state: {
+                activeTab: 0
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (userInfo) {
+            setUserData(JSON.parse(userInfo))
+        }
+    }, []);
+
     return (
         <CDropdown variant="nav-item">
             <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
-                <CAvatar src='http://localhost:7000/DropHRM/images/users/Screenshot_20230425_091511_Bashelia_1714556491454_23599.jpg' size="md" />
+                <CAvatar src={userData?.image} size="md" />
             </CDropdownToggle>
             <CDropdownMenu className="pt-0" placement="bottom-end">
-                <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
+                {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
                 <CDropdownItem>
                     <CIcon icon={cilBell} className="me-2" />
                     Updates
@@ -80,10 +99,6 @@ const AppHeaderDropdown = () => {
                 </CDropdownItem>
                 <CDropdownHeader className="bg-body-secondary fw-semibold my-2">Settings</CDropdownHeader>
                 <CDropdownItem>
-                    <CIcon icon={cilUser} className="me-2" />
-                    Profile
-                </CDropdownItem>
-                <CDropdownItem>
                     <CIcon icon={cilSettings} className="me-2" />
                     Settings
                 </CDropdownItem>
@@ -101,7 +116,14 @@ const AppHeaderDropdown = () => {
                         42
                     </CBadge>
                 </CDropdownItem>
-                <CDropdownDivider />
+                <CDropdownDivider /> */}
+
+                {/* for profile view */}
+                <CDropdownItem onClick={handleProfile}>
+                    <CIcon icon={cilUser} className="me-2" />
+                    Profile
+                </CDropdownItem>
+
                 {/* for logout account */}
                 <CDropdownItem onClick={handleLogout}>
                     <CIcon icon={cilLockLocked} className="me-2" />

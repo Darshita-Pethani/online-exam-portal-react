@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+// import { HashRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
@@ -60,7 +61,8 @@ const App = () => {
     }, [])
 
     return (
-        <HashRouter>
+        // <HashRouter>
+        <Router>
             <Suspense
                 fallback={
                     <div className="pt-3 text-center">
@@ -69,8 +71,8 @@ const App = () => {
                 }
             >
                 <Routes>
-                    {/* <Route exact path="/login" name="Login Page" element={<Login />} /> */}
                     <Route exact path="/" name="Login Page" element={<Login />} />
+                    {/* <Route exact path="/pages/login" name="Login Page" element={<Login />} /> */}
                     <Route exact path="/register" name="Register Page" element={<Register />} />
                     <Route
                         exact
@@ -96,7 +98,8 @@ const App = () => {
                 </Routes>
             </Suspense>
             <ShowNotification></ShowNotification>
-        </HashRouter>
+        </Router>
+        // </HashRouter>
     )
 }
 

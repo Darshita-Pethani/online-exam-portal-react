@@ -122,3 +122,13 @@ export async function GetUserEnrollList(data) {
         throw error;
     }
 }
+
+// Get user profile
+export async function userProfile() {
+    try {
+        const response = await callGetApi({ url: "user/token/profile"});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
