@@ -11,6 +11,8 @@ import { updateUser, userProfile } from '../../api/user';
 import { allDispatch } from '../../store/allDispatch';
 import { useNavigate } from 'react-router-dom';
 import { FormDatePicker } from '../forms/dateTimePicker';
+import { MdCancel } from "react-icons/md";
+import { useSelector } from 'react-redux';
 
 const ProfileHeader = styled.div`
     position: relative;
@@ -67,17 +69,17 @@ const ImageUploadWrapper = styled.div`
     top: 100%;
     left: 50%;
     transform: translate(-50%, -50%);
+    border: 4px solid white;
     width: 130px;
     height: 130px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: ${({ image }) => (image ? '#f0f0f0' : '#ff00002e')}; // Conditional bg color
 
     @media (max-width: 768px) {
         top: 60px;
@@ -141,9 +143,14 @@ const ProfileView = (props) => {
         setAddData({ ...addData, image: file, imageName: event.target.value });
     }
 
+    // cancel image
+    const handleImageCancel = () => {
+        setImage(null);
+        setAddData({ ...addData, image: null, imageName: null });
+    }
+
     const getUserData = async () => {
         const response = await userProfile();
-        console.log('response: ', response);
         if (response?.status === 200) {
             setAddData({ ...addData, ...response?.data?.data, imageName: "C:\\fakepath\\admin_img.png", standard_id: response?.data?.data?.standard_user_relation?.standard?.id });
             setImage(response?.data?.data?.image);
@@ -156,7 +163,7 @@ const ProfileView = (props) => {
         let formData = new FormData();
         const form = event.currentTarget;
         event.preventDefault()
-        if (form.checkValidity() === false) {
+        if (form.checkValidity() === false || !addData.image) {
             form.classList.add('was-validated');
             setValidated(true);
             ValidationTag();
@@ -175,7 +182,7 @@ const ProfileView = (props) => {
             formData.append("date_of_birth", addData?.date_of_birth);
             let response = await updateUser(formData);
             if (response.status === 200) {
-                setUserLoginData(JSON.stringify(response?.data?.data))
+                setUserLoginData(JSON.stringify(response?.data?.data?.userReturnData))
                 showNotification({
                     title: "Success",
                     message: response?.data?.message,
@@ -193,7 +200,6 @@ const ProfileView = (props) => {
                 });
             }
         }
-
     }
 
     useEffect(() => {
@@ -210,10 +216,24 @@ const ProfileView = (props) => {
                 <div style={{ flex: "0 0 30%" }}>
                     {/* Profile Header with Background Image */}
                     <ProfileHeader>
-                        <ImageUploadWrapper>
+                        <div onClick={handleImageCancel}
+                            style={{
+                                position: "absolute",
+                                top: "65%",
+                                left: "70%",
+                                transform: " translate(-60%, -60%)",
+                                zIndex: 2,
+                                cursor: "pointer",
+                                fontSize: "30px"
+                            }}
+                        >
+                            <MdCancel />
+                        </div>
+                        <ImageUploadWrapper image={images}>
                             <label htmlFor="formFile">
                                 {images ? (
                                     <ProfileImage src={images} alt="Profile" />
+
                                 ) : (
                                     <span>Upload Image</span>
                                 )}
@@ -227,7 +247,6 @@ const ProfileView = (props) => {
                             />
                         </ImageUploadWrapper>
                     </ProfileHeader>
-
                     {/* Profile Basic Info */}
                     <ProfileInfo>
                         <h4 style={{ fontWeight: 'bold' }}>Jordan Hamidul</h4>

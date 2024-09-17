@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -13,6 +13,7 @@ import {
     CNavLink,
     CNavItem,
     useColorModes,
+    CAvatar,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -20,14 +21,19 @@ import {
     cilContrast,
     cilEnvelopeOpen,
     cilList,
+    cilLockLocked,
     cilMenu,
     cilMoon,
     cilSun,
+    cilUser,
 } from '@coreui/icons'
+import { CgProfile } from "react-icons/cg";
 
-import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
 import { SET_SIDEBAR } from '../store/action'
+import { useNavigate } from 'react-router-dom'
+import { allDispatch } from '../store/allDispatch'
+import { userLogoutApi } from '../api/user'
 
 const AppHeader = () => {
     const headerRef = useRef()
@@ -43,6 +49,41 @@ const AppHeader = () => {
         })
     }, [])
 
+    const { showNotification, setUserLogoutData } = allDispatch();
+    const navigate = useNavigate();
+    const userInfo = useSelector(state => state?.user?.userData);
+    const [userData, setUserData] = useState([])
+
+    const handleLogout = async () => {
+        let response = await userLogoutApi();
+        if (response?.status === 200) {
+            await setUserLogoutData();
+            navigate("/");
+        } else {
+            showNotification({
+                title: "Error",
+                message: response?.data?.message,
+                status: 'danger',
+                isOpen: true
+            });
+        }
+    };
+
+    // go to profile tab
+    const handleProfile = () => {
+        navigate('/pages/student/profile-result', {
+            state: {
+                activeTab: 0
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (userInfo) {
+            setUserData(JSON.parse(userInfo))
+        }
+    }, []);
+
     return (
         <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
             <CContainer className="border-bottom px-4" fluid>
@@ -52,7 +93,7 @@ const AppHeader = () => {
                 >
                     <CIcon icon={cilMenu} size="lg" />
                 </CHeaderToggler>
-                <CHeaderNav className="ms-auto">
+                {/* <CHeaderNav className="ms-auto">
                     <CNavItem>
                         <CNavLink href="#">
                             <CIcon icon={cilBell} size="lg" />
@@ -68,9 +109,9 @@ const AppHeader = () => {
                             <CIcon icon={cilEnvelopeOpen} size="lg" />
                         </CNavLink>
                     </CNavItem>
-                </CHeaderNav>
+                </CHeaderNav> */}
                 <CHeaderNav>
-                    <li className="nav-item py-1">
+                    {/* <li className="nav-item py-1">
                         <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
                     </li>
                     <CDropdown variant="nav-item" placement="bottom-end">
@@ -115,9 +156,22 @@ const AppHeader = () => {
                     </CDropdown>
                     <li className="nav-item py-1">
                         <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
-                    </li>
+                    </li> */}
                     {/* show logout popup */}
-                    <AppHeaderDropdown />
+                    <div  className="d-flex align-items-center">
+                        <div onClick={handleProfile}>
+                            <CIcon icon={cilUser} className="me-2" />
+                        </div>
+
+                        <div onClick={handleLogout}>
+                            <CIcon icon={cilLockLocked} className="me-2" />
+                        </div>
+
+                        <div>
+                            <CAvatar src={userData?.image} size="md" />
+                        </div>
+                    </div>
+                    {/* <AppHeaderDropdown /> */}
                 </CHeaderNav>
             </CContainer>
             {/* for bread crumps */}

@@ -19,5 +19,11 @@ export const ValidationTag = (value) => {
         error.end_time = ""
     }
 
+    if (value?.image === null) {
+        error.image = "Image required"
+    } else {
+        error.image = ""
+    }
+
     return error;
 }

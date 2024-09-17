@@ -27,46 +27,11 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 const AppHeaderDropdown = () => {
-    const { showNotification, setUserLogoutData } = allDispatch();
-    const navigate = useNavigate();
-    const userInfo = useSelector(state => state?.user?.userData);
-    const [userData, setUserData] = useState([])
-
-    const handleLogout = async () => {
-        let response = await userLogoutApi();
-        if (response?.status === 200) {
-            await setUserLogoutData();
-            navigate("/");
-        } else {
-            showNotification({
-                title: "Error",
-                message: response?.data?.message,
-                status: 'danger',
-                isOpen: true
-            });
-        }
-    };
-
-    // go to profile tab
-    const handleProfile = () => {
-        navigate('/pages/student/profile-result', {
-            state: {
-                activeTab: 0
-            }
-        })
-    }
-
-    useEffect(() => {
-        if (userInfo) {
-            setUserData(JSON.parse(userInfo))
-        }
-    }, []);
-
     return (
         <CDropdown variant="nav-item">
-            <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
+            {/* <CDropdownToggle placement="bottom-end" className="py-0 pe-0" caret={false}>
                 <CAvatar src={userData?.image} size="md" />
-            </CDropdownToggle>
+            </CDropdownToggle> */}
             <CDropdownMenu className="pt-0" placement="bottom-end">
                 {/* <CDropdownHeader className="bg-body-secondary fw-semibold mb-2">Account</CDropdownHeader>
                 <CDropdownItem>
@@ -119,16 +84,16 @@ const AppHeaderDropdown = () => {
                 <CDropdownDivider /> */}
 
                 {/* for profile view */}
-                <CDropdownItem onClick={handleProfile}>
+                {/* <CDropdownItem onClick={handleProfile}>
                     <CIcon icon={cilUser} className="me-2" />
                     Profile
-                </CDropdownItem>
+                </CDropdownItem> */}
 
                 {/* for logout account */}
-                <CDropdownItem onClick={handleLogout}>
+                {/* <CDropdownItem onClick={handleLogout}>
                     <CIcon icon={cilLockLocked} className="me-2" />
                     Lock Account
-                </CDropdownItem>
+                </CDropdownItem> */}
             </CDropdownMenu>
         </CDropdown>
     )
