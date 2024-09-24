@@ -13,7 +13,6 @@ import { cilUser, cilCheckCircle } from '@coreui/icons';
 const Dashboard = () => {
     const navigate = useNavigate()
     const questionList = useSelector((state) => state?.customization?.showStudentsQuestionList)
-    console.log('questionList: ', questionList);
     const [allResults, setAllResults] = useState([]);
     const [todayResult, setTodayResult] = useState([]);
 
@@ -40,16 +39,17 @@ const Dashboard = () => {
     const resultData = async () => {
         const response = await showUserResult()
         if (response.status === 200) {
-            setAllResults(response?.data?.data)
+            setAllResults(response?.data?.data?.rows)
         }
-        const currentResult = response?.data?.data?.find((item => item?.exam_id === questionList[0]?.id))
+        const currentResult = response?.data?.data?.rows?.find((item => item?.exam_id === questionList[0]?.id))
         setTodayResult(currentResult)
     }
 
     const showAllResults = () => {
         navigate('/pages/student/profile-result', {
             state: {
-                activeTab: 1
+                activeTab: 1,
+                data: allResults
             }
         })
     }
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
     return (
         <>
-            {questionList && !todayResult ? (
+            {questionList?.length > 0 && !todayResult &&
                 <CRow>
                     <CCol xs={6} sm={4} md={3}>
                         <HoverableDiv onClick={showQuestionPaper}>
@@ -78,27 +78,26 @@ const Dashboard = () => {
                         </HoverableDiv>
                     </CCol>
                 </CRow>
-            ) : (
-                <>
-                    <CRow>
-                        <CCol xs={6} sm={4} md={3}>
-                            <HoverableDiv onClick={showAllResults}>
-                                <CWidgetStatsD
-                                    className="mb-4"
-                                    icon={<CIcon icon={cilCheckCircle} height={52} />}
-                                    values={[
-                                        { title: 'Results Declared' }
-                                    ]}
-                                    style={{
-                                        '--cui-card-cap-bg': '#2cbc63',
-                                        boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
-                                    }}
-                                />
-                            </HoverableDiv>
-                        </CCol>
-                    </CRow>
-                </>
-            )}
+            }
+
+            <CRow>
+                <CCol xs={6} sm={4} md={3}>
+                    <HoverableDiv onClick={showAllResults}>
+                        <CWidgetStatsD
+                            className="mb-4"
+                            icon={<CIcon icon={cilCheckCircle} height={52} />}
+                            values={[
+                                { title: 'Results Declared' }
+                            ]}
+                            style={{
+                                '--cui-card-cap-bg': '#2cbc63',
+                                boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
+                            }}
+                        />
+                    </HoverableDiv>
+                </CCol>
+            </CRow>
+
         </>
     )
 }

@@ -12,10 +12,12 @@ import {
 import ProfileView from './Profileview';
 import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import ResultView from './Resultview';
 
 const ProfileResultView = () => {
     const userInfo = useSelector(state => state?.user?.userData);
     const [userData, setUserData] = useState([])
+    const [allResults, setAllResults] = useState([]);
 
     const location = useLocation();
     const [activeTab, setActiveTab] = useState(0); // state for active tab
@@ -23,6 +25,7 @@ const ProfileResultView = () => {
     useEffect(() => {
         if (location?.state) {
             setActiveTab(location?.state?.activeTab)
+            setAllResults(location?.state?.data)
         }
     }, [location])
 
@@ -60,7 +63,7 @@ const ProfileResultView = () => {
                         <ProfileView id={userData?.id} />
                     </CTabPane>
                     <CTabPane visible={activeTab === 1}>
-                        Result content
+                        <ResultView id={userData?.id} data={allResults}/>
                     </CTabPane>
                 </CTabContent>
             </CCardBody>
